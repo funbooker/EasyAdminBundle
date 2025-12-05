@@ -14,6 +14,7 @@ final class FilterDto
     private ?string $fqcn = null;
     private ?string $formType = null;
     private KeyValueStore $formTypeOptions;
+    private KeyValueStore $customOptions;
     private ?string $propertyName = null;
     /** @var TranslatableInterface|string|false|null */
     private $label;
@@ -23,6 +24,7 @@ final class FilterDto
     public function __construct()
     {
         $this->formTypeOptions = KeyValueStore::new();
+        $this->customOptions = KeyValueStore::new();
     }
 
     public function getFqcn(): ?string
@@ -74,6 +76,29 @@ final class FilterDto
     public function setFormType(string $formType): void
     {
         $this->formType = $formType;
+    }
+
+    public function getCustomOptions(): KeyValueStore
+    {
+        return $this->customOptions;
+    }
+
+    public function getCustomOption(string $optionName): mixed
+    {
+        return $this->customOptions->get($optionName);
+    }
+
+    /**
+     * @param array<string, mixed> $customOptions
+     */
+    public function setCustomOptions(array $customOptions): void
+    {
+        $this->customOptions = KeyValueStore::new($customOptions);
+    }
+
+    public function setCustomOption(string $optionName, mixed $optionValue): void
+    {
+        $this->customOptions->set($optionName, $optionValue);
     }
 
     public function getProperty(): string

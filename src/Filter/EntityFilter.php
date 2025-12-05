@@ -25,6 +25,9 @@ final class EntityFilter implements FilterInterface
 {
     use FilterTrait;
 
+    public const OPTION_EMBEDDED_CRUD_FORM_CONTROLLER = 'crudControllerFqcn';
+    public const OPTION_ESCAPE_HTML_CONTENTS = 'escapeHtml';
+
     /**
      * @param TranslatableInterface|string|false|null $label
      */
@@ -48,6 +51,27 @@ final class EntityFilter implements FilterInterface
     public function autocomplete(bool $autocomplete = true): self
     {
         $this->dto->setFormTypeOption('autocomplete', $autocomplete);
+
+        return $this;
+    }
+
+    public function setCustomOption(string $optionName, $optionValue): self
+    {
+        $this->dto->setCustomOption($optionName, $optionValue);
+
+        return $this;
+    }
+
+    public function setCrudController(string $crudControllerFqcn): self
+    {
+        $this->setCustomOption(self::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, $crudControllerFqcn);
+
+        return $this;
+    }
+
+    public function renderAsHtml(bool $asHtml = true): self
+    {
+        $this->setCustomOption(self::OPTION_ESCAPE_HTML_CONTENTS, !$asHtml);
 
         return $this;
     }
