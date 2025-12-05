@@ -69,7 +69,11 @@ final class EntityConfigurator implements FilterConfiguratorInterface
         if ($supportsAutocomplete) {
             $associationMapping = $entityDto->getClassMetadata()->associationMappings[$propertyName];
             $targetEntityFqcn = $associationMapping['targetEntity'];
-            if (null === $targetCrudControllerFqcn = $context->getAdminControllers()->findCrudControllerByEntity($targetEntityFqcn)) {
+
+            $targetCrudControllerFqcn = $filterDto->getCustomOption(EntityFilter::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER)
+                ?? $context->getAdminControllers()->findCrudControllerByEntity($targetEntityFqcn);
+
+            if (null === $targetCrudControllerFqcn) {
                 throw new \LogicException('The target CRUD controller for the entity '.$targetEntityFqcn.' is not defined.');
             }
             $autocompleteEndpointUrl = $this->adminUrlGenerator
@@ -88,6 +92,8 @@ final class EntityConfigurator implements FilterConfiguratorInterface
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.class', $targetEntityFqcn);
             $filterDto->setFormTypeOptionIfNotSet('value_type_options.attr.data-widget', 'select2');
             $filterDto->setFormTypeOption('value_type_options.attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl);
+
+            $filterDto->setFormTypeOption('value_type_options.attr.data-ea-autocomplete-render-items-as-html', true === $filterDto->getCustomOption(EntityFilter::OPTION_ESCAPE_HTML_CONTENTS) ? 'false' : 'true');
         }
     }
 }
