@@ -45,6 +45,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\IntegerConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\LanguageConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\LocaleConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\MoneyConfigurator;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\Configurator\NestedConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\NumberConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\PercentConfigurator;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Configurator\SlugConfigurator;
@@ -315,6 +316,12 @@ return static function (ContainerConfigurator $container) {
         ->set(NumericFilterConfigurator::class)
 
         ->set(TextFilterConfigurator::class)
+
+        ->set(NestedConfigurator::class)
+        ->arg(0, new Reference('doctrine'))
+        ->arg(1, \function_exists('tagged')
+            ? tagged(EasyAdminExtension::TAG_FILTER_CONFIGURATOR)
+            : tagged_iterator(EasyAdminExtension::TAG_FILTER_CONFIGURATOR))
 
         ->set(ActionFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))
