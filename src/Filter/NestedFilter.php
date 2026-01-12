@@ -82,6 +82,13 @@ final class NestedFilter implements FilterInterface
         $wrappedFilterDto->apply($queryBuilder, $wrappedFilterDataDto, null, $wrappedEntityDto);
     }
 
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $class
+     *
+     * @return array{0: \Doctrine\Persistence\Mapping\ClassMetadata<T>, 1: string}
+     */
     public static function extractTargets(ObjectManager $objectManager, string $class, string $propertyPath): array
     {
         $segments = explode(self::PATH_SEPARATOR, $propertyPath);

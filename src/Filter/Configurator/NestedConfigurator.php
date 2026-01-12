@@ -17,13 +17,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\NestedFilter;
  */
 final class NestedConfigurator implements FilterConfiguratorInterface
 {
-    private $doctrine;
-    private $filterConfigurators;
 
-    public function __construct(ManagerRegistry $doctrine, iterable $filterConfigurators = [])
+    /**
+     * @param iterable<FilterConfiguratorInterface> $filterConfigurators
+     */
+    public function __construct(private ManagerRegistry $doctrine, private iterable $filterConfigurators = [])
     {
-        $this->doctrine = $doctrine;
-        $this->filterConfigurators = $filterConfigurators;
     }
 
     public function supports(FilterDto $filterDto, ?FieldDto $fieldDto, EntityDto $entityDto, AdminContext $context): bool
