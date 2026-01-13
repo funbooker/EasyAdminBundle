@@ -35,6 +35,8 @@ explicitly::
     use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
     use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
+    use EasyCorp\Bundle\EasyAdminBundle\Filter\NestedFilter;
+    use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
     class ProductCrudController extends AbstractCrudController
     {
@@ -48,6 +50,11 @@ explicitly::
                 // most of the time there is no need to define the
                 // filter type because EasyAdmin can guess it automatically
                 ->add(BooleanFilter::new('published'))
+
+                // Use filter on nested property
+                ->add(NestedFilter::wrap(
+                    TextFilter::new('options.name')
+                ))
             ;
         }
     }
@@ -319,6 +326,32 @@ Options:
 * ``preferredChoices(array $timezoneIds)`` (``null``): displays these timezones at the top of the list
 * ``canSelectMultiple()`` (``false``): allows selecting multiple timezones
 * ``renderExpanded()`` (``false``): renders as checkboxes instead of dropdown
+* ``ArrayFilter``: applied by default to array fields. It's rendered as a ``<select>``
+  list with the condition (equal/not equal) and another ``<select>`` list to introduce
+  the comparison value.
+* ``BooleanFilter``: applied by default to boolean fields. It's rendered as two
+  radio buttons labeled "Yes" and "No".
+* ``ChoiceFilter``: it's rendered as a ``<select>`` list with choices.
+* ``ComparisonFilter``: generic compound filter with two fields.
+* ``DateTimeFilter``: applied by default to datetime, date
+  or time fields respectively. It's rendered as a ``<select>`` list with the condition
+  (before/after/etc.) and the browser's native date picker to pick the date/time.
+* ``EntityFilter``: applied to fields with Doctrine associations (all kinds
+  supported). It's rendered as a ``<select>`` list with the condition (equal/not
+  equal/etc.) and another ``<select>`` list to choose the comparison value.
+  You can call `->autocomplete()` to load values dynamically via Ajax requests.
+* ``NullFilter``: it's not applied by default to any field. It's useful to
+  filter results depending on the "null" or "not null" value of a property.
+  It's rendered as two radio buttons for the null and not null options.
+* ``NumericFilter``: applied by default to numeric fields.
+  It's rendered as a ``<select>`` list with the condition (higher/lower/equal/etc.) and a
+  ``<input>`` to define the comparison value.
+* ``TextFilter``: applied by default to string/text fields. It's rendered as a
+  ``<select>`` list with the condition (contains/not contains/etc.) and an ``<input>`` or
+  ``<textarea>`` to define the comparison value.
+* ``NestedFilter``: A wrapper allowing to use any filters on nested properties.
+This filter is able to apply left joins until the last property in the given path
+and let the wrapped filter applies its conditions to query.
 
 Custom Filters
 --------------
