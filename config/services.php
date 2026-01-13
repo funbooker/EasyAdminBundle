@@ -316,6 +316,10 @@ return static function (ContainerConfigurator $container) {
 
         ->set(TextFilterConfigurator::class)
 
+        ->set(NestedFilterConfigurator::class)
+        ->arg(0, new Reference('doctrine'))
+        ->arg(1, tagged_iterator(EasyAdminExtension::TAG_FILTER_CONFIGURATOR))
+
         ->set(ActionFactory::class)
             ->arg(0, new Reference(AdminContextProvider::class))
             ->arg(1, new Reference(AuthorizationChecker::class))
