@@ -29,8 +29,8 @@ The four main pages of the CRUD controllers are:
 * ``index``, displays a list of entities which can be paginated, sorted by
   column and refined with search queries and filters;
 * ``detail``, displays the contents of a given entity;
-* ``new``, allows to create new entity instances;
-* ``edit``, allows to update any property of a given entity.
+* ``new``, allows you to create new entity instances;
+* ``edit``, allows you to update any property of a given entity.
 
 These pages are generated with four actions with the same name in the
 ``AbstractCrudController`` controller. This controller defines other secondary
@@ -272,11 +272,11 @@ Entity Options
             // can be a closure that defines two nullable arguments: entityInstance (which will
             // be null in 'index' and 'new' pages) and the current page name
             ->setEntityLabelInSingular(
-                fn (?Product $product, ?string $pageName) => $product ? $product->toString() : 'Product'
+                fn (?Product $product, ?string $pageName) => $product ? (string) $product : 'Product'
             )
-            ->setEntityLabelInPlural(function (?Category $category, ?string $pageName) {
-                return 'edit' === $pageName ? $category->getLabel() : 'Categories';
-            })
+            ->setEntityLabelInPlural(
+                fn (?Product $product, ?string $pageName) => $product ? $product->getName() : 'Products'
+            )
 
             // the Symfony Security permission needed to manage the entity
             // (none by default, so you can manage all instances of the entity)
@@ -480,7 +480,7 @@ Templates and Form Options
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            // this method allows to use your own template to render a certain part
+            // this method allows you to use your own template to render a certain part
             // of the backend instead of using EasyAdmin default template
             // the first argument is the "template name", which is the same as the
             // Twig path but without the `@EasyAdmin/` prefix and the `.html.twig` suffix
@@ -520,7 +520,7 @@ Other Options
             // by default, when the value of some field is `null`, EasyAdmin displays
             // a label with the `null` text. You can change that by overriding
             // the `label/null` template. However, if you have lots of `null` values
-            // and want to reduce the "visual noise" in your backend, you can use
+            // and want to simplify your backend display, you can use
             // the following option to not display anything when some value is `null`
             // (this option is applied both in the `index` and `detail` pages)
             ->hideNullValues()
@@ -589,7 +589,7 @@ in your dashboard and all controllers will inherit that configuration::
 Fields
 ------
 
-Fields allow to display the contents of your Doctrine entities on each
+Fields allow you to display the contents of your Doctrine entities on each
 :ref:`CRUD page <crud-pages>`. EasyAdmin provides built-in fields to display
 all the common data types, but you can also :ref:`create your own fields <custom-fields>`.
 
@@ -610,7 +610,7 @@ used in applications.
 
 The first way to customize their behavior is to override those methods in your
 own controllers. However, the original actions are so generic that they contain
-quite a lot of code, so overriding them is not that convenient.
+quite a lot of code, so overriding them can be cumbersome.
 
 Instead, you can override other smaller methods that implement certain features
 needed by the CRUD actions. For example, the ``index()`` action calls to a

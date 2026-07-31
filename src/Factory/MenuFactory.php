@@ -17,8 +17,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
-use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
+use function Symfony\Component\Translation\t;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -35,7 +35,7 @@ final class MenuFactory implements MenuFactoryInterface
     }
 
     /**
-     * @param MenuItemInterface[] $menuItems
+     * @param array<MenuItemDto|MenuItemInterface> $menuItems
      */
     public function createMainMenu(array $menuItems): MainMenuDto
     {

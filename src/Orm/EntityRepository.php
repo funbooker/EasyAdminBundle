@@ -331,7 +331,7 @@ class EntityRepository implements EntityRepositoryInterface
             $isIntegerProperty = 'integer' === $propertyDataType;
             $isNumericProperty = \in_array($propertyDataType, ['number', 'bigint', 'decimal', 'float'], true);
             // 'citext' is a PostgreSQL extension (https://github.com/EasyCorp/EasyAdminBundle/issues/2556)
-            $isTextProperty = \in_array($propertyDataType, ['string', 'text', 'citext', 'array', 'simple_array'], true);
+            $isTextProperty = \in_array($propertyDataType, ['ascii_string', 'string', 'text', 'citext', 'array', 'simple_array'], true);
             $isGuidProperty = \in_array($propertyDataType, ['guid', 'uuid'], true);
             $isUlidProperty = 'ulid' === $propertyDataType;
             $isJsonProperty = 'json' === $propertyDataType;

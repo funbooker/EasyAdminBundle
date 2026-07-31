@@ -32,7 +32,7 @@ class WebsiteSortTest extends AbstractCrudTestCase
     /**
      * @dataProvider sorting
      */
-    public function testSorting(array $query, ?\Closure $sortFunction, string $expectedSortIcon)
+    public function testSorting(array $query, ?\Closure $sortFunction, string $expectedSortIcon): void
     {
         // Arrange
         $expectedAmountMapping = [];
@@ -67,7 +67,7 @@ class WebsiteSortTest extends AbstractCrudTestCase
         }
     }
 
-    public function sorting(): \Generator
+    public static function sorting(): \Generator
     {
         yield [
             [],
@@ -80,7 +80,7 @@ class WebsiteSortTest extends AbstractCrudTestCase
             /**
              * @param list<Website> $array
              */
-            function (array &$array) {
+            static function (array &$array) {
                 usort($array, static function (Website $a, Website $b) {
                     $aPages = $a->getPages()->count();
                     $bPages = $b->getPages()->count();
@@ -100,7 +100,7 @@ class WebsiteSortTest extends AbstractCrudTestCase
             /**
              * @param list<Website> $array
              */
-            function (array &$array) {
+            static function (array &$array) {
                 usort($array, static function (Website $a, Website $b) {
                     $aPages = $a->getPages()->count();
                     $bPages = $b->getPages()->count();

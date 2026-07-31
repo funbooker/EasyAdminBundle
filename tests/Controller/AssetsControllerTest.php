@@ -24,7 +24,7 @@ class AssetsControllerTest extends AbstractCrudTestCase
         return DashboardController::class;
     }
 
-    public function testCssAssets()
+    public function testCssAssets(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
         $headHtmlContents = $crawler->filter('head')->html();

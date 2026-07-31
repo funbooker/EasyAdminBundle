@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Sukurti ir tęsti redagavimą',
         'save' => 'Išsaugoti',
         'save_and_continue' => 'Išsaugoti ir tęsti redagavimą',
+        'toggle_dropdown' => 'Perjungti išskleidžiamąjį meniu',
     ],
 
     'batch_action_modal' => [

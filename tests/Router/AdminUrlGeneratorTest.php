@@ -3,8 +3,11 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Router;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\DashboardContext;
+use EasyCorp\Bundle\EasyAdminBundle\Context\RequestContext;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\DashboardControllerRegistryInterface;
@@ -25,7 +28,7 @@ class AdminUrlGeneratorTest extends WebTestCase
 
     protected static $container;
 
-    public function testGenerateEmptyUrl()
+    public function testGenerateEmptyUrl(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -33,7 +36,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?foo=bar', $adminUrlGenerator->generateUrl());
     }
 
-    public function testGetRouteParameters()
+    public function testGetRouteParameters(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -41,7 +44,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertNull($adminUrlGenerator->get('this_query_param_does_not_exist'));
     }
 
-    public function testSetRouteParameters()
+    public function testSetRouteParameters(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -49,7 +52,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?foo=not_bar', $adminUrlGenerator->generateUrl());
     }
 
-    public function testNullParameters()
+    public function testNullParameters(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -58,7 +61,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?foo=bar&param2=null', $adminUrlGenerator->generateUrl());
     }
 
-    public function testSetAll()
+    public function testSetAll(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -66,7 +69,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?foo=bar&foo1=bar1&foo2=bar2', $adminUrlGenerator->generateUrl());
     }
 
-    public function testUnsetAll()
+    public function testUnsetAll(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -75,7 +78,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin', $adminUrlGenerator->generateUrl());
     }
 
-    public function testUnsetAllExcept()
+    public function testUnsetAllExcept(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -84,7 +87,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?foo2=bar2&foo3=bar3', $adminUrlGenerator->generateUrl());
     }
 
-    public function testParametersAreSorted()
+    public function testParametersAreSorted(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -98,7 +101,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?1_foo=bar&2_foo=bar&a_foo=bar&foo=bar', $adminUrlGenerator->generateUrl());
     }
 
-    public function testUrlParametersDontAffectOtherUrls()
+    public function testUrlParametersDontAffectOtherUrls(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -113,7 +116,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertNull($adminUrlGenerator->get('sort'));
     }
 
-    public function testExplicitDashboardController()
+    public function testExplicitDashboardController(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -121,7 +124,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/secure_admin?foo=bar', $adminUrlGenerator->generateUrl());
     }
 
-    public function testUnknownExplicitDashboardController()
+    public function testUnknownExplicitDashboardController(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The given "ThisDashboardControllerDoesNotExist" class is not a valid Dashboard controller. Make sure it extends from "EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController" or implements "EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface".');
@@ -132,7 +135,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $adminUrlGenerator->generateUrl();
     }
 
-    public function testDefaultCrudAction()
+    public function testDefaultCrudAction(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -144,7 +147,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?crudAction=new&crudControllerFqcn=FooController&foo=bar', $adminUrlGenerator->generateUrl());
     }
 
-    public function testControllerParameterRemovesRouteParameters()
+    public function testControllerParameterRemovesRouteParameters(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -158,7 +161,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertNull($adminUrlGenerator->get(EA::ROUTE_PARAMS));
     }
 
-    public function testActionParameterRemovesRouteParameters()
+    public function testActionParameterRemovesRouteParameters(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -172,7 +175,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertNull($adminUrlGenerator->get(EA::ROUTE_PARAMS));
     }
 
-    public function testRouteParametersRemoveOtherParameters()
+    public function testRouteParametersRemoveOtherParameters(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -190,7 +193,7 @@ class AdminUrlGeneratorTest extends WebTestCase
     /**
      * @legacy
      */
-    public function testLegacyParameters()
+    public function testLegacyParameters(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
         $adminUrlGenerator->set(EA::MENU_INDEX, 3);
@@ -201,7 +204,7 @@ class AdminUrlGeneratorTest extends WebTestCase
     /**
      * @group legacy
      */
-    public function testDeprecatedParameterMessage()
+    public function testDeprecatedParameterMessage(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
         $this->expectDeprecation('Since easycorp/easyadmin-bundle 4.5.0: Using the "menuIndex" query parameter is deprecated. Menu items are now highlighted automatically based on the Request data, so you don\'t have to deal with menu items manually anymore.');
@@ -211,7 +214,7 @@ class AdminUrlGeneratorTest extends WebTestCase
     /**
      * @group legacy
      */
-    public function testIncludeReferrer()
+    public function testIncludeReferrer(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -222,7 +225,7 @@ class AdminUrlGeneratorTest extends WebTestCase
     /**
      * @group legacy
      */
-    public function testRemoveReferrer()
+    public function testRemoveReferrer(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -234,7 +237,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?foo=bar', $adminUrlGenerator->generateUrl());
     }
 
-    public function testNoReferrerByDefault()
+    public function testNoReferrerByDefault(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -244,7 +247,7 @@ class AdminUrlGeneratorTest extends WebTestCase
     /**
      * @group legacy
      */
-    public function testCustomReferrer()
+    public function testCustomReferrer(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
 
@@ -255,7 +258,7 @@ class AdminUrlGeneratorTest extends WebTestCase
     /**
      * @group legacy
      */
-    public function testPersistentCustomReferrer()
+    public function testPersistentCustomReferrer(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator();
         $adminUrlGenerator->setReferrer('any_custom_value');
@@ -266,7 +269,7 @@ class AdminUrlGeneratorTest extends WebTestCase
         $this->assertSame('http://localhost/admin?foo=bar&referrer=/?foo%3Dbar', $adminUrlGenerator->generateUrl());
     }
 
-    public function testRelativeUrls()
+    public function testRelativeUrls(): void
     {
         $adminUrlGenerator = $this->getAdminUrlGenerator(false, true);
 
@@ -285,11 +288,14 @@ class AdminUrlGeneratorTest extends WebTestCase
     {
         self::bootKernel();
 
-        $adminContext = $this->getMockBuilder(AdminContextInterface::class)->disableOriginalConstructor()->getMock();
-        $adminContext->method('getDashboardRouteName')->willReturn('admin');
-        $adminContext->method('getSignedUrls')->willReturn($signedUrls);
-        $adminContext->method('getAbsoluteUrls')->willReturn($absoluteUrls);
-        $adminContext->method('getRequest')->willReturn(new Request(['foo' => 'bar']));
+        $dashboardDto = Dashboard::new()->getAsDto();
+        $dashboardDto->setRouteName('admin');
+        $dashboardDto->setAbsoluteUrls($absoluteUrls);
+
+        $adminContext = AdminContext::forTesting(
+            requestContext: RequestContext::forTesting(new Request(['foo' => 'bar'])),
+            dashboardContext: DashboardContext::forTesting($dashboardDto),
+        );
 
         $request = new Request(query: ['foo' => 'bar'], attributes: [EA::CONTEXT_REQUEST_ATTRIBUTE => $adminContext]);
 

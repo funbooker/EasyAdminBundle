@@ -181,7 +181,7 @@ Legacy Admin URLs
 
 Before the introduction of :ref:`pretty admin URLs <pretty-admin-urls>`, EasyAdmin
 used a single Symfony route to serve all dashboard URLs. The needed information
-is passed using query string parameters. If you generated the dashboard with the
+is passed using the query string parameters. If you generated the dashboard with the
 ``make:admin:dashboard`` command, the route is defined using `Symfony route annotations`_
 or PHP attributes (if the project requires PHP 8 or newer).
 
@@ -466,6 +466,7 @@ but meanwhile you can use `Symfony UX Chart.js`_ bundle to create those charts
 and render them in your own Twig template::
 
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
     use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
     use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
@@ -481,6 +482,11 @@ and render them in your own Twig template::
 
         // ... you'll also need to load some CSS/JavaScript assets to render
         // the charts; this is explained later in the chapter about Design
+        public function configureAssets(): Assets
+        {
+            return Assets::new()
+                ->addAssetMapperEntry('charts');
+        }
 
         public function index(): Response
         {
@@ -621,7 +627,7 @@ All menu items define the following methods to configure some options:
   one of the predefined Bootstrap styles (``primary``, ``secondary``, ``success``,
   ``danger``, ``warning``, ``info``, ``light``, ``dark``) or an arbitrary string
   content which is passed as the value of the ``style`` attribute of the HTML
-  element associated to the badge. The third argument allows to set custom
+  element associated to the badge. The third argument allows you to set custom
   HTML attributes in the element that renders the badge.
 
 The rest of options depend on each menu item type, as explained in the next sections.

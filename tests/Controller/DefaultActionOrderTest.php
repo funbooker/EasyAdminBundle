@@ -36,7 +36,7 @@ class DefaultActionOrderTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         $globalActionNames = [];
-        $crawler->filter('.global-actions [data-action-name]')->each(function ($node) use (&$globalActionNames) {
+        $crawler->filter('.global-actions [data-action-name]')->each(static function ($node) use (&$globalActionNames) {
             $globalActionNames[] = $node->attr('data-action-name');
         });
 
@@ -50,7 +50,7 @@ class DefaultActionOrderTest extends AbstractCrudTestCase
 
         // get entity actions for the first row
         $entityActionNames = [];
-        $crawler->filter('.datagrid tbody tr')->first()->filter('[data-action-name]')->each(function ($node) use (&$entityActionNames) {
+        $crawler->filter('.datagrid tbody tr')->first()->filter('[data-action-name]')->each(static function ($node) use (&$entityActionNames) {
             $actionName = $node->attr('data-action-name');
             if (!\in_array($actionName, $entityActionNames, true)) {
                 $entityActionNames[] = $actionName;
@@ -76,7 +76,7 @@ class DefaultActionOrderTest extends AbstractCrudTestCase
         $entity = $entities[0];
 
         $crawler = $this->client->request('GET', $this->generateDetailUrl($entity->getId()));
-        $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(function ($node) {
+        $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(static function ($node) {
             return $node->attr('data-action-name');
         });
 
@@ -96,7 +96,7 @@ class DefaultActionOrderTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($this->blogPosts->findOneBy([])->getId()));
 
         // get form actions
-        $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(function ($node) {
+        $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(static function ($node) {
             return $node->attr('data-action-name');
         });
 
@@ -115,7 +115,7 @@ class DefaultActionOrderTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
         // get form actions
-        $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(function ($node) {
+        $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(static function ($node) {
             return $node->attr('data-action-name');
         });
 

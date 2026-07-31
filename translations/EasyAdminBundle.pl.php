@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Zapisz i kontynuuj',
         'save' => 'Zapisz',
         'save_and_continue' => 'Zapisz i kontynuuj',
+        'toggle_dropdown' => 'Przełącz menu rozwijane',
     ],
 
     'batch_action_modal' => [
@@ -139,7 +140,7 @@ return [
 
     'autocomplete' => [
         'no-results-found' => 'Brak wyników',
-        // 'no-more-results' => 'No more results',
+        'no-more-results' => 'Brak kolejnych wyników',
         'loading-more-results' => 'Trwa ładowanie…',
     ],
 ];

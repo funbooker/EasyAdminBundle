@@ -3,6 +3,7 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Field\Configurator;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\PersistentCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -56,14 +57,14 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
     public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
     {
         $propertyName = $field->getProperty();
-        if (!$entityDto->getClassMetadata()->hasAssociation($propertyName)) {
+
+        if (!$this->isAssociation($entityDto->getClassMetadata(), $propertyName)) {
             throw new \RuntimeException(sprintf('The "%s" field is not a Doctrine association, so it cannot be used as an association field.', $propertyName));
         }
 
-        $targetEntityFqcn = $entityDto->getClassMetadata()->getAssociationTargetClass($propertyName);
         // the target CRUD controller can be NULL; in that case, field value doesn't link to the related entity
         $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER)
-            ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
+            ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($entityDto->getClassMetadata()->getAssociationTargetClass($propertyName));
 
         if (true === $field->getCustomOption(AssociationField::OPTION_RENDER_AS_EMBEDDED_FORM)) {
             if (false === $entityDto->getClassMetadata()->isSingleValuedAssociation($propertyName)) {
@@ -82,12 +83,18 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
                         'The "%s" association field of "%s" wants to render its contents using an EasyAdmin CRUD form. However, no CRUD form was found related to this field. You can either create a CRUD controller for the entity "%s" or pass the CRUD controller to use as the first argument of the "renderAsEmbeddedForm()" method.',
                         $field->getProperty(),
                         $context->getCrud()?->getControllerFqcn(),
-                        $targetEntityFqcn
+                        $entityDto->getClassMetadata()->getAssociationTargetClass($propertyName)
                     )
                 );
             }
 
-            $this->configureCrudForm($field, $entityDto, $propertyName, $targetEntityFqcn, $targetCrudControllerFqcn);
+            $this->configureCrudForm(
+                $field,
+                $entityDto,
+                $propertyName,
+                $entityDto->getClassMetadata()->getAssociationTargetClass($propertyName),
+                $targetCrudControllerFqcn,
+            );
 
             return;
         }
@@ -190,6 +197,28 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         }
     }
 
+    /**
+     * Recursive check if a string is a Doctrine association (e.g. "foo") or a nested Doctrine
+     * association (e.g. "foo.bar").
+     */
+    private function isAssociation(ClassMetadata $entityClassMetadata, string $property): bool
+    {
+        $nestedProperties = explode('.', $property);
+
+        $nextProperty = array_shift($nestedProperties);
+
+        if (!$entityClassMetadata->hasAssociation($nextProperty)) {
+            return false;
+        } elseif (0 === \count($nestedProperties)) {
+            return true;
+        }
+
+        return $this->isAssociation(
+            $this->entityFactory->getEntityMetadata($entityClassMetadata->getAssociationTargetClass($nextProperty)),
+            implode('.', $nestedProperties),
+        );
+    }
+
     private function configureToOneAssociation(FieldDto $field, EntityDto $entityDto): void
     {
         $field->setCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE, 'toOne');
@@ -238,7 +267,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             return null;
         }
 
-        if (method_exists($entityInstance, '__toString')) {
+        if ($entityInstance instanceof \Stringable) {
             return (string) $entityInstance;
         }
 

@@ -13,7 +13,6 @@
     ],
     "require": {
         "php": ">=8.1",
-        "ext-json": "*",
         "doctrine/doctrine-bundle": "^2.5|^3.0",
         "doctrine/orm": "^2.12|^3.0",
         "symfony/asset": "^5.4|^6.0|^7.0|^8.0",
@@ -59,6 +58,9 @@
         "symfony/process": "^5.4|^6.0|^7.0|^8.0",
         "symfony/web-link": "^5.4|^6.0|^7.0|^8.0",
         "vincentlanglet/twig-cs-fixer": "^3.10"
+    },
+    "conflict": {
+        "symfony/error-handler": "<5.4.35"
     },
     "config": {
         "sort-packages": true,

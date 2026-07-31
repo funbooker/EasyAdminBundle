@@ -17,9 +17,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use Symfony\Component\PropertyAccess\Exception\AccessException;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Contracts\Translation\TranslatableInterface;
 use function Symfony\Component\String\u;
 use function Symfony\Component\Translation\t;
-use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>

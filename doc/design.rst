@@ -7,9 +7,8 @@ managed by `Webpack`_ via Symfony's `Webpack Encore`_.
 
 Like any other Symfony bundle, assets are copied to (or symlinked from) the
 ``public/bundles/`` directory of your application when installing or updating
-the bundle. If this doesn't work for any reason, your backend won't display the
-proper CSS/JS styles. In those cases, run this command to install those assets
-manually:
+the bundle. If this doesn't work for any reason, your backend won't display
+properly. In those cases, run this command to install those assets manually:
 
 .. code-block:: terminal
 
@@ -435,7 +434,7 @@ If you are editing for example the element with ``id = 200`` of the ``User`` ent
 the ``<body>`` of that page will be ``<body id="easyadmin-edit-User-200" ...>``.
 
 The pattern of the ``class`` attribute is different because it applies several
-CSS classes at the same time:
+CSS classes:
 
 ==========  ============================================
 Page        ``<body>`` CSS class
@@ -459,7 +458,7 @@ this bundle.
 
 However, if you want total control over the backend styles, you can use Webpack
 to integrate the SCSS and JavaScript source files provided in the ``assets/``
-directory. The only caveat is that EasyAdmin doesn't use Webpack Encore yet when
+directory. The only limitation is that EasyAdmin doesn't use Webpack Encore yet when
 loading the assets, so you can't use features like versioning. This will be
 fixed in future versions.
 

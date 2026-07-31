@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class ProjectTag
+class ProjectTag implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

@@ -6,6 +6,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Cache\CacheWarmer;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\DashboardControllerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Router\AdminRouteGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
@@ -44,7 +45,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly RequestMatcherInterface $requestMatcher,
         private readonly CacheItemPoolInterface $cache,
-        private readonly AdminRouteGenerator $adminRouteGenerator,
+        private readonly AdminRouteGeneratorInterface $adminRouteGenerator,
         private readonly string $buildDir,
         private readonly CrudControllerRegistry $crudControllerRegistry,
     ) {
@@ -92,7 +93,7 @@ class AdminRouterSubscriber implements EventSubscriberInterface
             }
 
             // this is not a cached dashboard route, so this is case (3) a regular Symfony request
-            if (!\array_key_exists($request->attributes->get('_route'), $dashboardControllerRoutes)) {
+            if (!\array_key_exists($request->attributes->get('_route', ''), $dashboardControllerRoutes)) {
                 return;
             }
         }

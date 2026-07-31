@@ -437,6 +437,19 @@ class Crud
         return $this;
     }
 
+    /**
+     * By default, batch actions show a confirmation modal before execution.
+     * Set to false to execute batch actions immediately without confirmation.
+     * Set to a string (or TranslatableInterface) to show a custom confirmation message.
+     * The message can use placeholders: %action_name% and %num_items%.
+     */
+    public function askConfirmationOnBatchActions(bool|string|TranslatableInterface $askConfirmation = true): self
+    {
+        $this->dto->setAskConfirmationOnBatchActions($askConfirmation);
+
+        return $this;
+    }
+
     public function getAsDto(): CrudDto
     {
         $this->dto->setPaginator(new PaginatorDto($this->paginatorPageSize, $this->paginatorRangeSize, 1, $this->paginatorFetchJoinCollection, $this->paginatorUseOutputWalkers));

@@ -3,6 +3,8 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Field\Configurator;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
@@ -15,8 +17,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGeneratorInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\Field\AbstractFieldTest;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\ProjectDomain\DeveloperCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\ProjectDomain\ProjectCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Controller\ProjectDomain\ProjectReleaseCategoryCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\ProjectDomain\Developer;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\ProjectDomain\Project;
+use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\ProjectDomain\ProjectReleaseCategory;
 use EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\ProjectDomain\ProjectTag;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -47,42 +51,43 @@ class AssociationConfiguratorTest extends AbstractFieldTest
         return $this->projectDto;
     }
 
-    /**
-     * @dataProvider toOneAssociation
-     */
-    public function testToOneAssociation(FieldInterface $field): void
+    public function testToOneAssociation(): void
     {
+        $field = AssociationField::new('leadDeveloper');
+        $entityDto = new EntityDto(Project::class, $this->createStub(ClassMetadata::class));
+        $entityDto->setFields(FieldCollection::new([$field]));
+
         $field->getAsDto()->setDoctrineMetadata((array) $this->projectDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));
         $field->setCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, DeveloperCrudController::class);
 
-        $field = $this->configure($field, controllerFqcn: ProjectCrudController::class);
-        $this->assertSame('toOne', $field->getCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE));
-        $this->assertSame(EntityType::class, $field->getFormType());
-        $this->assertSame(Developer::class, $field->getFormTypeOption('class'));
+        $fieldDto = $this->configure($field, controllerFqcn: ProjectCrudController::class);
+        $this->assertSame('toOne', $fieldDto->getCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE));
+        $this->assertSame(EntityType::class, $fieldDto->getFormType());
+        $this->assertSame(Developer::class, $fieldDto->getFormTypeOption('class'));
     }
 
-    public static function toOneAssociation(): \Generator
+    public function testToManyAssociation(): void
     {
-        yield [AssociationField::new('leadDeveloper')];
-    }
-
-    /**
-     * @dataProvider toManyAssociation
-     */
-    public function testToManyAssociation(FieldInterface $field): void
-    {
+        $field = AssociationField::new('projectTags');
         $field->getAsDto()->setDoctrineMetadata((array) $this->projectDto->getClassMetadata()->getAssociationMapping($field->getAsDto()->getProperty()));
         $field->setCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER, DeveloperCrudController::class);
 
-        $field = $this->configure($field, controllerFqcn: ProjectCrudController::class);
-        $this->assertSame('toMany', $field->getCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE));
-        $this->assertSame(EntityType::class, $field->getFormType());
-        $this->assertSame(ProjectTag::class, $field->getFormTypeOption('class'));
+        $fieldDto = $this->configure($field, controllerFqcn: ProjectCrudController::class);
+        $this->assertSame('toMany', $fieldDto->getCustomOption(AssociationField::OPTION_DOCTRINE_ASSOCIATION_TYPE));
+        $this->assertSame(EntityType::class, $fieldDto->getFormType());
+        $this->assertSame(ProjectTag::class, $fieldDto->getFormTypeOption('class'));
     }
 
-    public static function toManyAssociation(): \Generator
+    public function testNestedAssociationWithCrudControllerSet(): void
     {
-        yield [AssociationField::new('projectTags')];
+        $field = AssociationField::new('latestRelease.category')
+            ->setCrudController(ProjectReleaseCategoryCrudController::class)
+        ;
+
+        $fieldDto = $this->configure($field);
+
+        $this->assertSame(EntityType::class, $fieldDto->getFormType());
+        $this->assertSame(ProjectReleaseCategory::class, $fieldDto->getFormTypeOption('class'));
     }
 
     /**
@@ -103,7 +108,7 @@ class AssociationConfiguratorTest extends AbstractFieldTest
     {
         yield [TextField::new('name')];
         yield [TextField::new('price')];
-        yield [TextField::new('price.currency')];
+        yield [TextField::new('price.currency')]; // Doctrine embeddable
     }
 
     /**

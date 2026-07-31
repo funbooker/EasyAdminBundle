@@ -35,7 +35,7 @@ class CustomActionOrderTest extends AbstractCrudTestCase
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
-        $globalActionNames = $crawler->filter('.global-actions [data-action-name]')->each(function ($node) {
+        $globalActionNames = $crawler->filter('.global-actions [data-action-name]')->each(static function ($node) {
             return $node->attr('data-action-name');
         });
 
@@ -62,7 +62,7 @@ class CustomActionOrderTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         // get entity actions for the first row
-        $entityActionNames = $crawler->filter('.datagrid tbody tr')->first()->filter('[data-action-name]')->each(function ($node) {
+        $entityActionNames = $crawler->filter('.datagrid tbody tr')->first()->filter('[data-action-name]')->each(static function ($node) {
             return $node->attr('data-action-name');
         });
 
@@ -90,7 +90,7 @@ class CustomActionOrderTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateDetailUrl($this->categories->findOneBy([])->getId()));
 
         // get all actions in detail page
-        $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(function ($node) {
+        $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(static function ($node) {
             return $node->attr('data-action-name');
         });
 
@@ -118,7 +118,7 @@ class CustomActionOrderTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateEditFormUrl($this->categories->findOneBy([])->getId()));
 
         // get form actions
-        $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(function ($node) {
+        $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(static function ($node) {
             return $node->attr('data-action-name');
         });
 
@@ -140,12 +140,12 @@ class CustomActionOrderTest extends AbstractCrudTestCase
         static::assertSame($actionsOrderInTemplate, $actionNames);
     }
 
-    public function testNewPageActionsOrder()
+    public function testNewPageActionsOrder(): void
     {
         $crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
         // get form actions
-        $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(function ($node) {
+        $actionNames = $crawler->filter('.page-actions [data-action-name]')->each(static function ($node) {
             return $node->attr('data-action-name');
         });
 

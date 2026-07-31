@@ -2,7 +2,7 @@ EasyAdmin Association Field
 ===========================
 
 This field displays the contents of a property used to associate Doctrine entities
-between them (of any type: one-to-one, one-to-many, etc.) In form pages this
+with each other (of any type: one-to-one, one-to-many, etc.) In form pages this
 field is rendered using an advanced autocomplete widget based on `TomSelect`_ library.
 
 In :ref:`form pages (edit and new) <crud-pages>` it looks like this:
@@ -115,7 +115,7 @@ The value of this option must be a ``callable`` that receives a ``QueryBuilder``
 object as its first argument and returns the modified ``QueryBuilder``::
 
     yield AssociationField::new('...')->setQueryBuilder(
-        fn (QueryBuilder $queryBuilder): QueryBuilder => $queryBuilder->addCriteria('...')
+        fn (QueryBuilder $queryBuilder): QueryBuilder => $queryBuilder->andWhere('...')
     );
 
 If you already define custom queries in repository methods, you can reuse them

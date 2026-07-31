@@ -32,7 +32,7 @@ class PageSortTest extends AbstractCrudTestCase
     /**
      * @dataProvider sorting
      */
-    public function testSorting(array $query, ?string $sortFunction, string $expectedSortIcon)
+    public function testSorting(array $query, ?string $sortFunction, string $expectedSortIcon): void
     {
         // Arrange
         $expectedAmountMapping = [];
@@ -66,7 +66,7 @@ class PageSortTest extends AbstractCrudTestCase
         }
     }
 
-    public function sorting(): \Generator
+    public static function sorting(): \Generator
     {
         yield [
             [],

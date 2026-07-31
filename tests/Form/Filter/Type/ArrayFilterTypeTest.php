@@ -2,128 +2,90 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Type;
 
-use Doctrine\ORM\Query\Parameter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\ArrayFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use Symfony\Component\Form\Test\TypeTestCase;
 
-class ArrayFilterTypeTest extends FilterTypeTest
+class ArrayFilterTypeTest extends TypeTestCase
 {
-    protected const FILTER_TYPE = ArrayFilterType::class;
-
     /**
-     * @dataProvider getDataProvider
+     * @dataProvider submit
      */
-    public function testSubmitAndFilter($submittedData, $data, array $options, string $dql, array $params)
+    public function testSubmit(array $options, array $dataToSubmit, array $expectedData): void
     {
-        $form = $this->factory->create(static::FILTER_TYPE, null, $options);
-        $form->submit($submittedData);
-        $this->assertSame($data, $form->getData());
-        $this->assertSame($submittedData, $form->getViewData());
+        $form = $this->factory->create(ArrayFilterType::class, null, $options);
+        $form->submit($dataToSubmit);
+
+        $this->assertSame($dataToSubmit, $form->getViewData());
+        $this->assertSame($expectedData, $form->getData());
         $this->assertEmpty($form->getExtraData());
         $this->assertTrue($form->isSynchronized());
-
-        $filter = $this->filterRegistry->resolveType($form);
-        $filter->filter($this->qb, $form, ['field' => 'foo', 'dataType' => 'array']);
-        $this->assertSame(static::FILTER_TYPE, $filter::class);
-        $this->assertSame($dql, $this->qb->getDQL());
-        $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
+        $this->assertInstanceOf(ArrayFilterType::class, $form->getConfig()->getType()->getInnerType());
     }
 
-    public static function getDataProvider(): iterable
+    public static function submit(): iterable
     {
         yield [
+            [],
             ['comparison' => ComparisonType::CONTAINS, 'value' => ['bar']],
             ['comparison' => 'like', 'value' => ['bar']],
-            [],
-            'SELECT o FROM Object o WHERE o.foo like :foo_1',
-            [new Parameter('foo_1', '%"bar"%')],
         ];
-
         yield [
+            [],
             ['comparison' => ComparisonType::CONTAINS_ALL, 'value' => ['bar', 'baz']],
-            ['comparison' => 'like', 'value' => ['bar', 'baz']],
-            [],
-            'SELECT o FROM Object o WHERE o.foo like :foo_1 AND o.foo like :foo_2',
-            [new Parameter('foo_1', '%"bar"%'), new Parameter('foo_2', '%"baz"%')],
+            ['comparison' => 'like_all', 'value' => ['bar', 'baz']],
         ];
-
         yield [
+            [],
             ['comparison' => ComparisonType::NOT_CONTAINS, 'value' => ['foo', 'bar']],
             ['comparison' => 'not like', 'value' => ['foo', 'bar']],
-            [],
-            'SELECT o FROM Object o WHERE o.foo not like :foo_1 OR o.foo not like :foo_2 OR o.foo IS NULL',
-            [
-                new Parameter('foo_1', '%"foo"%'),
-                new Parameter('foo_2', '%"bar"%'),
-            ],
         ];
-
         yield [
+            [],
             ['comparison' => ComparisonType::CONTAINS, 'value' => []],
             ['comparison' => 'IS NULL', 'value' => []],
-            [],
-            'SELECT o FROM Object o WHERE o.foo IS NULL',
-            [],
         ];
-
         yield [
+            [],
             ['comparison' => ComparisonType::CONTAINS_ALL, 'value' => []],
             ['comparison' => 'IS NULL', 'value' => []],
-            [],
-            'SELECT o FROM Object o WHERE o.foo IS NULL',
-            [],
         ];
-
         yield [
+            [
+                'value_type_options' => [
+                    'choices' => ['a' => 'a', 'b' => 'b', 'c' => 'c'],
+                ],
+            ],
             ['comparison' => ComparisonType::CONTAINS, 'value' => null],
             ['comparison' => 'IS NULL', 'value' => null],
+        ];
+        yield [
             [
                 'value_type_options' => [
                     'choices' => ['a' => 'a', 'b' => 'b', 'c' => 'c'],
                 ],
             ],
-            'SELECT o FROM Object o WHERE o.foo IS NULL',
-            [],
-        ];
-
-        yield [
             ['comparison' => ComparisonType::CONTAINS_ALL, 'value' => null],
             ['comparison' => 'IS NULL', 'value' => null],
+        ];
+        yield [
             [
                 'value_type_options' => [
                     'choices' => ['a' => 'a', 'b' => 'b', 'c' => 'c'],
                 ],
             ],
-            'SELECT o FROM Object o WHERE o.foo IS NULL',
-            [],
-        ];
-
-        yield [
             ['comparison' => ComparisonType::CONTAINS, 'value' => 'b'],
             ['comparison' => 'like', 'value' => ['b']],
-            [
-                'value_type_options' => [
-                    'choices' => ['a' => 'a', 'b' => 'b', 'c' => 'c'],
-                ],
-            ],
-            'SELECT o FROM Object o WHERE o.foo like :foo_1',
-            [new Parameter('foo_1', '%"b"%')],
         ];
-
         yield [
-            ['comparison' => ComparisonType::NOT_CONTAINS, 'value' => ['a', 'c']],
-            ['comparison' => 'not like', 'value' => ['a', 'c']],
             [
                 'value_type_options' => [
                     'multiple' => true,
                     'choices' => ['a' => 'a', 'b' => 'b', 'c' => 'c'],
                 ],
             ],
-            'SELECT o FROM Object o WHERE o.foo not like :foo_1 OR o.foo not like :foo_2 OR o.foo IS NULL',
-            [
-                new Parameter('foo_1', '%"a"%'),
-                new Parameter('foo_2', '%"c"%'),
-            ],
+            ['comparison' => ComparisonType::NOT_CONTAINS, 'value' => ['a', 'c']],
+            ['comparison' => 'not like', 'value' => ['a', 'c']],
         ];
     }
 }

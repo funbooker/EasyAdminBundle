@@ -50,7 +50,7 @@ class ActionGroupsCrudController extends AbstractCrudController
             ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('delete'));
         $group2Global = ActionGroup::new('group2global', 'Global Action Group 2')
             ->createAsGlobalActionGroup()
-            ->addMainAction(Action::new('main_action', 'Main Action')->linkToCrudAction('aGlobalAction'))
+            ->addMainAction(Action::new('main_action', 'Main Action')->setIcon('fa fa-star')->linkToCrudAction('aGlobalAction'))
             ->addAction(Action::new('action1', 'Action 1')->linkToCrudAction('aGlobalAction'))
             ->addAction(Action::new('action2', 'Action 2')->linkToCrudAction('aGlobalAction'));
 
@@ -173,10 +173,10 @@ class ActionGroupsCrudController extends AbstractCrudController
             ->add(Crud::PAGE_NEW, $group8)
 
             // test CSS class combinations with regular actions
-            ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
+            ->update(Crud::PAGE_INDEX, Action::EDIT, static function (Action $action) {
                 return $action->setCssClass('btn btn-sm btn-primary');
             })
-            ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
+            ->update(Crud::PAGE_INDEX, Action::DELETE, static function (Action $action) {
                 return $action->addCssClass('text-danger');
             });
     }

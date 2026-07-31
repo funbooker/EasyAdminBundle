@@ -65,12 +65,28 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
         static::assertGreaterThanOrEqual(2, $splitDropdown->filter('.dropdown-menu .dropdown-item')->count(), 'Split dropdown should have at least 2 actions');
     }
 
+    public function testSplitButtonMainActionIconInIndexPage(): void
+    {
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        // find the split button for group2global which has an icon on the main action
+        $splitDropdown = $crawler->filter('.action-group[data-action-group-name="group2global"]');
+        static::assertCount(1, $splitDropdown, 'Should have group2global action group');
+
+        $mainAction = $splitDropdown->filter('[data-action-group-name-main-action]');
+        static::assertCount(1, $mainAction, 'Split dropdown should have a main action');
+
+        // verify the main action has the icon
+        $icon = $mainAction->filter('i.fa-star, .btn-icon i.fa-star');
+        static::assertCount(1, $icon, 'Main action in split button should display its icon');
+    }
+
     public function testActionGroupsWithHeadersAndDividersInIndexPage(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         // Find dropdowns with headers
-        $dropdownsWithHeaders = $crawler->filter('.action-group')->reduce(function ($node) {
+        $dropdownsWithHeaders = $crawler->filter('.action-group')->reduce(static function ($node) {
             return $node->filter('.dropdown-header')->count() > 0;
         });
 
@@ -161,7 +177,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         // Find dropdowns with icon but no text
-        $dropdownsWithIconOnly = $crawler->filter('.action-group')->reduce(function ($node) {
+        $dropdownsWithIconOnly = $crawler->filter('.action-group')->reduce(static function ($node) {
             $button = $node->filter('button.dropdown-toggle')->first();
             if (0 === $button->count()) {
                 return false;
@@ -195,7 +211,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
         static::assertCount(1, $firstSubmenu->filter('a.dropdown-toggle'), 'Submenu should have a dropdown toggle');
         static::assertCount(1, $firstSubmenu->filter('ul.dropdown-menu'), 'Submenu should have a nested dropdown menu');
 
-        $splitButtonSubmenus = $submenus->reduce(function ($node) {
+        $splitButtonSubmenus = $submenus->reduce(static function ($node) {
             return $node->filter('.dropdown-toggle-split')->count() > 0;
         });
         static::assertGreaterThan(0, $splitButtonSubmenus->count(), 'Should have at least one split button submenu (group2)');
@@ -204,7 +220,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
         static::assertCount(1, $splitSubmenu->filter('.d-flex'), 'Split submenu should have flex container');
         static::assertCount(1, $splitSubmenu->filter('.dropdown-toggle-split'), 'Split submenu should have split toggle button');
 
-        $submenusWithHeaders = $submenus->reduce(function ($node) {
+        $submenusWithHeaders = $submenus->reduce(static function ($node) {
             return $node->filter('.dropdown-menu .dropdown-header')->count() > 0;
         });
         static::assertGreaterThan(0, $submenusWithHeaders->count(), 'Should have at least one submenu with headers (group3)');
@@ -215,7 +231,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
 
         // test conditional entity action groups (group6)
         // find a row for Category 10 (should have group6)
-        $category10Rows = $entityRows->reduce(function ($node) {
+        $category10Rows = $entityRows->reduce(static function ($node) {
             $nameCell = $node->filter('td[data-label*="Name"], td[data-column="name"]')->first();
 
             return $nameCell->count() > 0 && str_contains($nameCell->text(), 'Category 10');
@@ -227,7 +243,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
             static::assertGreaterThanOrEqual(4, $category10Submenus->count(), 'Category 10 row should have group6 in addition to group1, group2, group3');
 
             $hasGroup6 = false;
-            $category10Submenus->each(function ($submenu) use (&$hasGroup6) {
+            $category10Submenus->each(static function ($submenu) use (&$hasGroup6) {
                 if (str_contains($submenu->text(), 'Action Group 6')) {
                     $hasGroup6 = true;
                 }
@@ -236,7 +252,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
         }
 
         // find a row for Category 0 (should NOT have group6)
-        $category0Rows = $entityRows->reduce(function ($node) {
+        $category0Rows = $entityRows->reduce(static function ($node) {
             $nameCell = $node->filter('td[data-label*="Name"], td[data-column="name"]')->first();
 
             return $nameCell->count() > 0 && str_contains($nameCell->text(), 'Category 0');
@@ -249,7 +265,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
             static::assertLessThanOrEqual(3, $category0Submenus->count(), 'Category 0 row should not have group6');
 
             $hasGroup6 = false;
-            $category0Submenus->each(function ($submenu) use (&$hasGroup6) {
+            $category0Submenus->each(static function ($submenu) use (&$hasGroup6) {
                 if (str_contains($submenu->text(), 'Action Group 6')) {
                     $hasGroup6 = true;
                 }
@@ -279,7 +295,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
         static::assertGreaterThanOrEqual(5, $crawler->filter('.action-group')->count());
         static::assertGreaterThan(0, $crawler->filter('.action-group button.dropdown-toggle-split')->count());
 
-        $dropdownsWithHeaders = $crawler->filter('.action-group')->reduce(function ($node) {
+        $dropdownsWithHeaders = $crawler->filter('.action-group')->reduce(static function ($node) {
             return $node->filter('.dropdown-header')->count() > 0;
         });
         static::assertGreaterThan(0, $dropdownsWithHeaders->count(), 'Should have dropdowns with headers');
@@ -296,7 +312,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
         $category10 = $this->categories->findOneBy(['name' => 'Category 10']);
         $crawler = $this->client->request('GET', $this->generateDetailUrl($category10->getId()));
 
-        $group6Count = $crawler->filter('.action-group')->reduce(function ($node) {
+        $group6Count = $crawler->filter('.action-group')->reduce(static function ($node) {
             return str_contains($node->text(), 'Action Group 6');
         })->count();
 
@@ -306,7 +322,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
         $category0 = $this->categories->findOneBy(['name' => 'Category 0']);
         $crawler = $this->client->request('GET', $this->generateDetailUrl($category0->getId()));
 
-        $group6Count = $crawler->filter('.action-group')->reduce(function ($node) {
+        $group6Count = $crawler->filter('.action-group')->reduce(static function ($node) {
             return str_contains($node->text(), 'Action Group 6');
         })->count();
 
@@ -337,7 +353,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
         static::assertGreaterThanOrEqual(3, $crawler->filter('.action-group')->count());
 
         // Test dropdown with headers and dividers
-        $dropdownsWithHeaders = $crawler->filter('.action-group')->reduce(function ($node) {
+        $dropdownsWithHeaders = $crawler->filter('.action-group')->reduce(static function ($node) {
             return $node->filter('.dropdown-header')->count() > 0;
         });
         static::assertGreaterThan(0, $dropdownsWithHeaders->count());
@@ -352,7 +368,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
         static::assertGreaterThan(0, $linkActions->count());
 
         $hasValidLinks = false;
-        $linkActions->each(function ($link) use (&$hasValidLinks) {
+        $linkActions->each(static function ($link) use (&$hasValidLinks) {
             $href = $link->attr('href');
             if (str_contains($href, 'action=') || str_contains($href, 'crudAction=')) {
                 $hasValidLinks = true;
@@ -398,7 +414,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
         // Test regular dropdown structure
-        $regularDropdowns = $crawler->filter('.action-group')->reduce(function ($node) {
+        $regularDropdowns = $crawler->filter('.action-group')->reduce(static function ($node) {
             return 0 === $node->filter('button.dropdown-toggle-split')->count();
         });
 
@@ -410,7 +426,7 @@ class ActionGroupsCrudControllerTest extends AbstractCrudTestCase
         static::assertCount(1, $regularDropdown->filter('.dropdown-menu'));
 
         // Test split button structure
-        $splitDropdowns = $crawler->filter('.action-group')->reduce(function ($node) {
+        $splitDropdowns = $crawler->filter('.action-group')->reduce(static function ($node) {
             return $node->filter('button.dropdown-toggle-split')->count() > 0;
         });
 

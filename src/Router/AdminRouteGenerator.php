@@ -530,14 +530,13 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                     ];
 
                     continue;
-                } else {
-                    @trigger_deprecation(
-                        'easycorp/easyadmin-bundle',
-                        '4.24.0',
-                        'The "%s" dashboard controller applies the #[AdminDashboard] attribute, but it doesn\'t use it to define the route path and route name of the dashboard. Using the default #[Route] attribute from Symfony on the "index()" method of the dashboard instead of the #[AdminDashboard] attribute (e.g. #[AdminDashboard(routePath: \'/admin\', routeName: \'admin\')]) is deprecated and it will no longer work in EasyAdmin 5.0.0.',
-                        $reflectionClass->getName()
-                    );
                 }
+                @trigger_deprecation(
+                    'easycorp/easyadmin-bundle',
+                    '4.24.0',
+                    'The "%s" dashboard controller applies the #[AdminDashboard] attribute, but it doesn\'t use it to define the route path and route name of the dashboard. Using the default #[Route] attribute from Symfony on the "index()" method of the dashboard instead of the #[AdminDashboard] attribute (e.g. #[AdminDashboard(routePath: \'/admin\', routeName: \'admin\')]) is deprecated and it will no longer work in EasyAdmin 5.0.0.',
+                    $reflectionClass->getName()
+                );
             } else {
                 @trigger_deprecation(
                     'easycorp/easyadmin-bundle',
@@ -935,7 +934,7 @@ final class AdminRouteGenerator implements AdminRouteGeneratorInterface
                 EA::CRUD_ACTION => $route->getDefault(EA::CRUD_ACTION),
             ];
 
-            $fqcnToRouteName[$route->getDefault(EA::DASHBOARD_CONTROLLER_FQCN)][$route->getDefault(EA::CRUD_CONTROLLER_FQCN)][$route->getDefault(EA::CRUD_ACTION)] = $routeName;
+            $fqcnToRouteName[$route->getDefault(EA::DASHBOARD_CONTROLLER_FQCN)][$route->getDefault(EA::CRUD_CONTROLLER_FQCN) ?? ''][$route->getDefault(EA::CRUD_ACTION) ?? ''] = $routeName;
         }
 
         $routeNameToFqcnItem = $this->cache->getItem(self::CACHE_KEY_ROUTE_TO_FQCN);

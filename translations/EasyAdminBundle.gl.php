@@ -59,6 +59,7 @@ return [
         // 'create_and_continue' => '',
         // 'save' => '',
         // 'save_and_continue' => '',
+        'toggle_dropdown' => 'Alternar menú despregable',
     ],
 
     'batch_action_modal' => [

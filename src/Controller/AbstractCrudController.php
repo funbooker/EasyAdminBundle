@@ -235,9 +235,9 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             if (!$this->isCsrfTokenValid(BooleanField::CSRF_TOKEN_NAME, $context->getRequest()->query->get('csrfToken'))) {
                 if (class_exists(InvalidCsrfTokenException::class)) {
                     throw new InvalidCsrfTokenException();
-                } else {
-                    return new Response('Invalid CSRF token.', 400);
                 }
+
+                return new Response('Invalid CSRF token.', 400);
             }
 
             $fieldName = $context->getRequest()->query->get('fieldName');
@@ -446,7 +446,7 @@ abstract class AbstractCrudController extends AbstractController implements Crud
             try {
                 $this->deleteEntity($entityManager, $entityInstance);
             } catch (ForeignKeyConstraintViolationException $e) {
-                throw new EntityRemoveException(['entity_name' => $entityDto->toString(), 'message' => $e->getMessage()], $e);
+                throw new EntityRemoveException(['entity_name' => (string) $entityDto, 'message' => $e->getMessage()], $e);
             }
 
             $this->container->get('event_dispatcher')->dispatch(new AfterEntityDeletedEvent($entityInstance));

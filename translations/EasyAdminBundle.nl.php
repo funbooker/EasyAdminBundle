@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Aanmaken en verdergaan',
         'save' => 'Opslaan',
         'save_and_continue' => 'Opslaan en verdergaan',
+        'toggle_dropdown' => 'Schakel vervolgkeuzemenu',
     ],
 
     'batch_action_modal' => [

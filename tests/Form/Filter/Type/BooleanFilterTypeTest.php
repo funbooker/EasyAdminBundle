@@ -2,46 +2,29 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Tests\Form\Filter\Type;
 
-use Doctrine\ORM\Query\Parameter;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\BooleanFilterType;
+use Symfony\Component\Form\Test\TypeTestCase;
 
-class BooleanFilterTypeTest extends FilterTypeTest
+class BooleanFilterTypeTest extends TypeTestCase
 {
-    protected const FILTER_TYPE = BooleanFilterType::class;
-
     /**
-     * @dataProvider getDataProvider
+     * @dataProvider submit
      */
-    public function testSubmitAndFilter($submittedData, $data, string $dql, array $params)
+    public function test(string $dataToSubmit, bool $expectedData): void
     {
-        $form = $this->factory->create(static::FILTER_TYPE);
-        $form->submit($submittedData);
-        $this->assertSame($data, $form->getData());
-        $this->assertSame($submittedData, $form->getViewData());
+        $form = $this->factory->create(BooleanFilterType::class);
+        $form->submit($dataToSubmit);
+
+        $this->assertSame($dataToSubmit, $form->getViewData());
+        $this->assertSame($expectedData, $form->getData());
         $this->assertEmpty($form->getExtraData());
         $this->assertTrue($form->isSynchronized());
-
-        $filter = $this->filterRegistry->resolveType($form);
-        $filter->filter($this->qb, $form, ['field' => 'foo']);
-        $this->assertSame(static::FILTER_TYPE, $filter::class);
-        $this->assertSame($dql, $this->qb->getDQL());
-        $this->assertSameDoctrineParams($params, $this->qb->getParameters()->toArray());
+        $this->assertInstanceOf(BooleanFilterType::class, $form->getConfig()->getType()->getInnerType());
     }
 
-    public static function getDataProvider(): iterable
+    public static function submit(): iterable
     {
-        yield [
-            '1',
-            true,
-            'SELECT o FROM Object o WHERE o.foo = :foo_1',
-            [new Parameter('foo_1', true, 'boolean')],
-        ];
-
-        yield [
-            '0',
-            false,
-            'SELECT o FROM Object o WHERE o.foo = :foo_1',
-            [new Parameter('foo_1', false, 'boolean')],
-        ];
+        yield ['1', true];
+        yield ['0', false];
     }
 }

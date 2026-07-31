@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\ProjectDo
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class ProjectIssue
+class ProjectIssue implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

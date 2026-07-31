@@ -4,13 +4,13 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionGroupDto;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
-use function Symfony\Component\String\u;
 use Symfony\Contracts\Translation\TranslatableInterface;
+use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class ActionGroup
+final class ActionGroup implements \Stringable
 {
     // these are the action groups applied to a specific entity instance
     public const TYPE_ENTITY = 'entity';

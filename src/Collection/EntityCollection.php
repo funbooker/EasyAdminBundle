@@ -39,7 +39,7 @@ final class EntityCollection implements CollectionInterface
 
     public function first(): ?EntityDto
     {
-        return $this->entities[array_key_first($this->entities)] ?? null;
+        return $this->entities[array_key_first($this->entities) ?? ''] ?? null;
     }
 
     public function offsetExists(mixed $offset): bool

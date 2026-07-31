@@ -25,8 +25,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
+use function Symfony\Component\Translation\t;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -212,14 +212,30 @@ final class ActionFactory
         }
 
         if ($actionDto->isBatchAction()) {
-            $actionDto->addHtmlAttributes([
-                'data-bs-toggle' => 'modal',
-                'data-bs-target' => '#modal-batch-action',
+            $batchActionAttributes = [
                 'data-action-csrf-token' => $this->csrfTokenManager?->getToken('ea-batch-action-'.$actionDto->getName()),
                 'data-action-batch' => 'true',
                 'data-entity-fqcn' => $adminContext->getCrud()->getEntityFqcn(),
                 'data-action-url' => $actionDto->getLinkUrl(),
-            ]);
+            ];
+
+            $confirmationConfig = $adminContext->getCrud()->askConfirmationOnBatchActions();
+
+            if (false === $confirmationConfig) {
+                $batchActionAttributes['data-action-batch-no-confirm'] = 'true';
+            } else {
+                $batchActionAttributes['data-bs-toggle'] = 'modal';
+                $batchActionAttributes['data-bs-target'] = '#modal-batch-action';
+
+                // if the confirmation config is not a boolean, it's a string or TranslatableInterface with the custom confirmation message
+                if (true !== $confirmationConfig) {
+                    $batchActionAttributes['data-batch-action-confirm-message'] = $confirmationConfig instanceof TranslatableInterface
+                        ? $confirmationConfig
+                        : t($confirmationConfig, $defaultTranslationParameters, $translationDomain);
+                }
+            }
+
+            $actionDto->addHtmlAttributes($batchActionAttributes);
         }
 
         return $actionDto;

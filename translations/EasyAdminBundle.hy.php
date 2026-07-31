@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Ստեղծել և շարունակել',
         'save' => 'Պահպանել',
         'save_and_continue' => 'Պահպանել և շարունակել',
+        'toggle_dropdown' => 'Փոխարկել իջնող ընտրացանկը',
     ],
 
     'batch_action_modal' => [

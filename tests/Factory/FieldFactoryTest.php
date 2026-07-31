@@ -142,7 +142,7 @@ class FieldFactoryTest extends KernelTestCase
 
         $this->assertSame(
             $expectedField,
-            array_values(array_map(fn (FieldDto $field) => $field->getFieldFqcn(), (array) $fieldCollection->getIterator()))[0],
+            array_values(array_map(static fn (FieldDto $field) => $field->getFieldFqcn(), (array) $fieldCollection->getIterator()))[0],
             sprintf('Failed asserting that string "%s" is turned into a field of type "%s".', $property, $expectedField),
         );
     }

@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-final class AdminUrlGenerator implements AdminUrlGeneratorInterface
+final class AdminUrlGenerator implements \Stringable, AdminUrlGeneratorInterface
 {
     private bool $isInitialized = false;
     private ?string $dashboardRoute = null;
@@ -350,7 +350,7 @@ final class AdminUrlGenerator implements AdminUrlGeneratorInterface
         }
 
         if (\is_object($paramValue)) {
-            if (method_exists($paramValue, '__toString')) {
+            if ($paramValue instanceof \Stringable) {
                 $paramValue = (string) $paramValue;
             } else {
                 throw new \InvalidArgumentException(sprintf('The object passed as the value of the "%s" parameter must implement the "__toString()" method to allow using its value as a route parameter.', $paramName));

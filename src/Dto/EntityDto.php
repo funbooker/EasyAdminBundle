@@ -15,9 +15,9 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  *
- * @template TEntity of object = object
+ * @template TEntity of object
  */
-final class EntityDto
+final class EntityDto implements \Stringable
 {
     private bool $isAccessible = true;
     /** @var TEntity|null */
@@ -51,7 +51,15 @@ final class EntityDto
 
     public function __toString(): string
     {
-        return $this->toString();
+        if (null === $this->instance) {
+            return '';
+        }
+
+        if ($this->instance instanceof \Stringable) {
+            return (string) $this->instance;
+        }
+
+        return sprintf('%s #%s', $this->getName(), substr($this->getPrimaryKeyValueAsString(), 0, 16));
     }
 
     /**
@@ -67,17 +75,12 @@ final class EntityDto
         return basename(str_replace('\\', '/', $this->fqcn));
     }
 
+    /**
+     * @deprecated since 4.27 and to be removed in 5.0, use $entityDto->__toString() instead
+     */
     public function toString(): string
     {
-        if (null === $this->instance) {
-            return '';
-        }
-
-        if (method_exists($this->instance, '__toString')) {
-            return (string) $this->instance;
-        }
-
-        return sprintf('%s #%s', $this->getName(), substr($this->getPrimaryKeyValueAsString(), 0, 16));
+        return $this->__toString();
     }
 
     /**

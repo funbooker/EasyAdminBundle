@@ -28,9 +28,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class FormLayoutFactory
 {
-    public function __construct(
-        private TranslatorInterface $translator,
-    ) {
+    public function __construct(private readonly TranslatorInterface $translator)
+    {
     }
 
     public function createLayout(FieldCollection $fields, string $pageName): FieldCollection

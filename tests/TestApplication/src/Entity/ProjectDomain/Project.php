@@ -8,7 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class Project
+class Project implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,13 +30,13 @@ class Project
     /**
      * @var Collection<int, ProjectIssue>
      */
-    #[ORM\OneToMany(targetEntity: ProjectIssue::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectIssue::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $projectIssues;
 
     /**
      * @var Collection<int, Developer>
      */
-    #[ORM\OneToMany(targetEntity: Developer::class, mappedBy: 'favouriteProject')]
+    #[ORM\OneToMany(mappedBy: 'favouriteProject', targetEntity: Developer::class)]
     private Collection $favouriteProjectOf;
 
     /**
@@ -112,6 +112,13 @@ class Project
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getName(): ?string

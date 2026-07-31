@@ -66,7 +66,7 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
         $this->assertSame($expected, $result);
     }
 
-    public function provideValuesForFileSize(): iterable
+    public static function provideValuesForFileSize(): iterable
     {
         yield [0, '0B'];
         yield [1, '1B'];
@@ -85,7 +85,7 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
         yield [\PHP_INT_MAX, '8E'];
     }
 
-    public function provideValuesForRepresentAsString(): iterable
+    public static function provideValuesForRepresentAsString(): iterable
     {
         yield [null, ''];
         yield ['foo bar', 'foo bar'];
@@ -101,7 +101,7 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
             }
         }, '*some value'];
         yield [new class {}, '/class@anonymous.*/', true];
-        yield [new class {
+        yield [new class implements \Stringable {
             public function __toString()
             {
                 return 'foo bar';
@@ -114,13 +114,13 @@ class EasyAdminTwigExtensionTest extends KernelTestCase
             }
         }, '/class@anonymous.* #1234/', true];
 
-        yield ['foo', 'foo bar', false, fn ($value) => $value.' bar'];
+        yield ['foo', 'foo bar', false, static fn ($value) => $value.' bar'];
         yield [new class {
             public function someMethod()
             {
                 return 'foo';
             }
         }, 'foo', false, 'someMethod'];
-        yield ['foo', '*foo bar', false, fn ($value, $translator) => $translator->trans($value.' bar')];
+        yield ['foo', '*foo bar', false, static fn ($value, $translator) => $translator->trans($value.' bar')];
     }
 }

@@ -13,6 +13,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestUrlGeneration;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+/**
+ * @template Crud of CrudControllerInterface
+ */
 abstract class AbstractCrudTestCase extends WebTestCase
 {
     use CrudTestActions;
@@ -38,7 +41,7 @@ abstract class AbstractCrudTestCase extends WebTestCase
     }
 
     /**
-     * @return class-string<CrudControllerInterface> returns the tested Controller Fqcn
+     * @return class-string<Crud> returns the tested Controller Fqcn
      */
     abstract protected function getControllerFqcn(): string;
 

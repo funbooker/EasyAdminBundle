@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'Креирај и продолжи со уредување',
         'save' => 'Зачувај ги промените',
         'save_and_continue' => 'Зачувај и продолжи со уредување',
+        'toggle_dropdown' => 'Префрли паѓачко мени',
     ],
 
     'batch_action_modal' => [

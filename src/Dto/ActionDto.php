@@ -16,12 +16,12 @@ final class ActionDto
 {
     private ?string $type = null;
     private ?string $name = null;
-    /** @var TranslatableInterface|string|(callable(object): string)|false|null */
+    /** @var TranslatableInterface|string|callable|false|null */
     private mixed $label = null;
     private ?string $icon = null;
     private string $cssClass = '';
     private string $addedCssClass = '';
-    /** @var array<string, string> */
+    /** @var array<string, string|TranslatableInterface> */
     private array $htmlAttributes = [];
     private ?string $linkUrl = null;
     private ?string $templatePath = null;
@@ -91,9 +91,6 @@ final class ActionDto
         return $this->label;
     }
 
-    /**
-     * @param TranslatableInterface|string|(callable(object $entity): string)|false|null $label
-     */
     public function setLabel(TranslatableInterface|string|callable|false|null $label): void
     {
         $this->label = $label;
@@ -170,7 +167,7 @@ final class ActionDto
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, string|TranslatableInterface>
      */
     public function getHtmlAttributes(): array
     {
@@ -178,7 +175,7 @@ final class ActionDto
     }
 
     /**
-     * @param array<string, string> $htmlAttributes
+     * @param array<string, string|TranslatableInterface> $htmlAttributes
      */
     public function addHtmlAttributes(array $htmlAttributes): void
     {
@@ -186,14 +183,14 @@ final class ActionDto
     }
 
     /**
-     * @param array<string, string> $htmlAttributes
+     * @param array<string, string|TranslatableInterface> $htmlAttributes
      */
     public function setHtmlAttributes(array $htmlAttributes): void
     {
         $this->htmlAttributes = $htmlAttributes;
     }
 
-    public function setHtmlAttribute(string $attributeName, string $attributeValue): void
+    public function setHtmlAttribute(string $attributeName, string|TranslatableInterface $attributeValue): void
     {
         $this->htmlAttributes[$attributeName] = $attributeValue;
     }
@@ -400,6 +397,10 @@ final class ActionDto
 
         if (null !== $this->routeName) {
             $action->linkToRoute($this->routeName, $this->routeParameters);
+        }
+
+        if (null !== $this->url) {
+            $action->linkToUrl($this->url);
         }
 
         if (null !== $this->displayCallable) {

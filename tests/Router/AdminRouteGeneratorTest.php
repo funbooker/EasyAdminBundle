@@ -18,11 +18,11 @@ class AdminRouteGeneratorTest extends WebTestCase
     /**
      * @dataProvider provideFindRouteData
      */
-    public function testFindRoute(?string $dashboardControllerFqcn, ?string $crudControllerFqcn, ?string $action, ?string $expectedRouteName)
+    public function testFindRoute(?string $dashboardControllerFqcn, ?string $crudControllerFqcn, ?string $action, ?string $expectedRouteName): void
     {
         $client = static::createClient();
         $cacheMock = $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
-        $cacheMock->method('getItem')->willReturnCallback(function ($key) {
+        $cacheMock->method('getItem')->willReturnCallback(static function ($key) {
             $item = new CacheItem();
             $item->expiresAfter(3600);
 
@@ -52,7 +52,7 @@ class AdminRouteGeneratorTest extends WebTestCase
             return $item;
         });
 
-        $dashboardControllers = new RewindableGenerator(function () {
+        $dashboardControllers = new RewindableGenerator(static function () {
             yield DashboardController::class => new DashboardController();
             yield SecondDashboardController::class => new SecondDashboardController();
         }, 2);
@@ -70,7 +70,7 @@ class AdminRouteGeneratorTest extends WebTestCase
         $this->assertSame($expectedRouteName, $routeName);
     }
 
-    public function provideFindRouteData(): iterable
+    public static function provideFindRouteData(): iterable
     {
         yield [null, null, null, 'admin'];
         yield [DashboardController::class, null, null, 'admin'];

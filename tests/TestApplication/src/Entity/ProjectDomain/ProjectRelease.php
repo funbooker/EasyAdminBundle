@@ -5,7 +5,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Entity\ProjectDo
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class ProjectRelease
+class ProjectRelease implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -14,6 +14,9 @@ class ProjectRelease
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
+
+    #[ORM\OneToOne]
+    private ?ProjectReleaseCategory $category = null;
 
     public function __toString(): string
     {
@@ -33,6 +36,18 @@ class ProjectRelease
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCategory(): ?ProjectReleaseCategory
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?ProjectReleaseCategory $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

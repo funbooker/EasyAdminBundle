@@ -19,7 +19,7 @@ final class TwigFilterTest extends KernelTestCase
         $this->twig = $this->getContainer()->get(Environment::class);
     }
 
-    public function myFilter($number, int $decimals, string $decPoint, string $thousandsSep)
+    public function myFilter($number, int $decimals, string $decPoint, string $thousandsSep): string
     {
         return number_format($number, $decimals, $decPoint, $thousandsSep);
     }
@@ -43,7 +43,7 @@ final class TwigFilterTest extends KernelTestCase
     public function testLazyLoadedFilter(): void
     {
         $loader = new FactoryRuntimeLoader([
-            'EATests\MyLazyFilterRuntime' => fn () => new class {
+            'EATests\MyLazyFilterRuntime' => static fn () => new class {
                 public function myFilter($number, int $decimals, string $decPoint, string $thousandsSep)
                 {
                     return number_format($number, $decimals, $decPoint, $thousandsSep);
@@ -76,7 +76,7 @@ final class TwigFilterTest extends KernelTestCase
      */
     public function testClosure(): void
     {
-        $this->twig->addFilter(new TwigFilter('my_filter', fn (float $value) => 'closure: '.$value));
+        $this->twig->addFilter(new TwigFilter('my_filter', static fn (float $value) => 'closure: '.$value));
 
         $view = "{{number | ea_apply_filter_if_exists('my_filter')}}";
         $context = ['number' => 123_456.789];
@@ -119,7 +119,7 @@ final class TwigFilterTest extends KernelTestCase
         $this->expectExceptionMessage('Unable to load runtime for filter: "my_filter"');
 
         $loader = new FactoryRuntimeLoader([
-            'EATests\MyLazyFilterRuntime' => fn () => new class {},
+            'EATests\MyLazyFilterRuntime' => static fn () => new class {},
         ]);
 
         $this->twig->addRuntimeLoader($loader);

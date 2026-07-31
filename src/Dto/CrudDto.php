@@ -9,8 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Translation\TranslatableMessageBuilder;
 use Symfony\Component\ExpressionLanguage\Expression;
-use function Symfony\Component\Translation\t;
 use Symfony\Contracts\Translation\TranslatableInterface;
+use function Symfony\Component\Translation\t;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -78,6 +78,7 @@ final class CrudDto
     private ?string $contentWidth = null;
     private ?string $sidebarWidth = null;
     private bool $hideNullValues = false;
+    private bool|string|TranslatableInterface $askConfirmationOnBatchActions = true;
 
     public function __construct()
     {
@@ -279,7 +280,7 @@ final class CrudDto
         }
 
         if (null !== $entityInstance) {
-            if (method_exists($entityInstance, '__toString')) {
+            if ($entityInstance instanceof \Stringable) {
                 $entityAsString = (string) $entityInstance;
 
                 if ('' !== $entityAsString) {
@@ -297,7 +298,7 @@ final class CrudDto
 
     public function getHelpMessage(?string $pageName = null): TranslatableInterface|string
     {
-        return $this->helpMessages[$pageName ?? $this->pageName] ?? '';
+        return $this->helpMessages[$pageName ?? $this->pageName ?? ''] ?? '';
     }
 
     /**
@@ -596,5 +597,15 @@ final class CrudDto
     public function hideNullValues(bool $hide): void
     {
         $this->hideNullValues = $hide;
+    }
+
+    public function askConfirmationOnBatchActions(): bool|string|TranslatableInterface
+    {
+        return $this->askConfirmationOnBatchActions;
+    }
+
+    public function setAskConfirmationOnBatchActions(bool|string|TranslatableInterface $askConfirmation): void
+    {
+        $this->askConfirmationOnBatchActions = $askConfirmation;
     }
 }

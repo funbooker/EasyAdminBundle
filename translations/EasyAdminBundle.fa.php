@@ -59,6 +59,7 @@ return [
         'create_and_continue' => 'ایجاد و ادامه ویرایش',
         'save' => 'ذخیره تغییرات',
         'save_and_continue' => 'ذخیره کردن و ادامه ویرایش',
+        'toggle_dropdown' => 'تغییر منوی کشویی',
     ],
 
     'batch_action_modal' => [

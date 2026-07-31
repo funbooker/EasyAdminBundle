@@ -145,7 +145,7 @@ for the field. These options are defined in the same way as Symfony Forms:
     );
 
 PHP Enums Support
-·················
+.................
 
 The ``setChoices`` option supports PHP enums too, both UnitEnum and BackedEnum.
 Suppose you have this backed enum defined somewhere in your project::

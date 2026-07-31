@@ -22,6 +22,10 @@ $configuration = [
         'default_uuid_version' => 7,
         'time_based_uuid_version' => 7,
     ],
+    'profiler' => [
+        'enabled' => true,
+        'collect' => false,
+    ],
 ];
 
 if (EasyCorp\Bundle\EasyAdminBundle\Tests\TestApplication\Kernel::VERSION_ID < 60000) {

@@ -12,7 +12,7 @@
             href="{{ main_action.htmlElement.isLink ? main_action.linkUrl : null }}"
             action="{{ main_action.htmlElement.isForm ? main_action.linkUrl : null }}"
             method="{{ main_action.htmlElement.isForm ? 'POST' : null }}"
-            icon="{{ group.icon }}"
+            icon="{{ main_action.icon ?: group.icon }}"
             htmlAttributes="{{ main_action.htmlAttributes|merge({'data-action-group-name-main-action': true, onclick: main_action.htmlElement.isButton ? 'window.location=\'' ~ main_action.linkUrl ~ '\'' : null})|filter((v) => v is not null) }}"
         >
             {% set main_action_label = main_action.label|trans %}
@@ -27,7 +27,7 @@
                 htmlAttributes="{{ {'data-bs-toggle': 'dropdown', 'aria-expanded': 'false'} }}"
                 label:class="visually-hidden"
         >
-            {{ 'action.toggle_dropdown'|trans }}
+            {{ 'action.toggle_dropdown'|trans(domain: 'EasyAdminBundle') }}
         </twig:ea:Button>
     {% else %} {# render as a single button that toggles the dropdown (no main action) #}
         <twig:ea:Button

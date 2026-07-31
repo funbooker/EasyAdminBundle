@@ -23,9 +23,9 @@ class FormFieldValueController extends AbstractCrudController
         // and then use the formatValue() method to test that this method receives the
         // original field value, not the one modified with the other options
         return [
-            TextField::new('title')->setMaxLength(2)->formatValue(fn ($value, $entity) => $value),
+            TextField::new('title')->setMaxLength(2)->formatValue(static fn ($value, $entity) => $value),
             DateTimeField::new('createdAt')->setFormat('long', 'long')
-                ->formatValue(fn (/** @var \DateTimeInterface $value */ $value, $entity) => date('YmdHis', $value->getTimestamp())),
+                ->formatValue(static fn (/** @var \DateTimeInterface $value */ $value, $entity) => date('YmdHis', $value->getTimestamp())),
         ];
     }
 }

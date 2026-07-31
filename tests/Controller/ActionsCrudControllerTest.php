@@ -31,7 +31,7 @@ class ActionsCrudControllerTest extends AbstractCrudTestCase
         $this->categories = $this->entityManager->getRepository(Category::class);
     }
 
-    public function testCssClasses()
+    public function testCssClasses(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -43,7 +43,7 @@ class ActionsCrudControllerTest extends AbstractCrudTestCase
         static::assertSame('btn btn-primary  action-new', trim($crawler->filter('.global-actions > a')->first()->attr('class')));
     }
 
-    public function testDynamicLabels()
+    public function testDynamicLabels(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 
@@ -53,7 +53,7 @@ class ActionsCrudControllerTest extends AbstractCrudTestCase
         static::assertSame('Reset', $crawler->filter('a.dropdown-item[data-action-name="action8"]')->text());
     }
 
-    public function testFormAction()
+    public function testFormAction(): void
     {
         $crawler = $this->client->request('GET', $this->generateIndexUrl());
 

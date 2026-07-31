@@ -11,7 +11,7 @@ use function Symfony\Component\Translation\t;
 
 class ActionGroupTest extends TestCase
 {
-    public function testActionGroupWithAutomaticLabel()
+    public function testActionGroupWithAutomaticLabel(): void
     {
         $group = ActionGroup::new('group_name');
         $group->addAction(Action::new('action1')->linkToCrudAction(''));
@@ -21,7 +21,7 @@ class ActionGroupTest extends TestCase
         $this->assertSame('Group Name', $dto->getLabel());
     }
 
-    public function testActionGroupWithCustomLabel()
+    public function testActionGroupWithCustomLabel(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 1');
         $group->addAction(Action::new('action1')->linkToCrudAction(''));
@@ -30,7 +30,7 @@ class ActionGroupTest extends TestCase
         $this->assertSame('Action Group 1', $dto->getLabel());
     }
 
-    public function testActionGroupWithTranslatableLabel()
+    public function testActionGroupWithTranslatableLabel(): void
     {
         $translatableLabel = t('Action Group 1');
         $group = ActionGroup::new('group_name', $translatableLabel);
@@ -40,7 +40,7 @@ class ActionGroupTest extends TestCase
         $this->assertEquals($translatableLabel, $dto->getLabel());
     }
 
-    public function testActionGroupWithoutLabel()
+    public function testActionGroupWithoutLabel(): void
     {
         $group = ActionGroup::new('group_name', false);
         $group->setIcon('fa fa-cog');
@@ -50,7 +50,7 @@ class ActionGroupTest extends TestCase
         $this->assertFalse($dto->getLabel());
     }
 
-    public function testActionGroupWithIcon()
+    public function testActionGroupWithIcon(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 1', 'fa fa-bars');
         $group->addAction(Action::new('action1')->linkToCrudAction(''));
@@ -59,7 +59,7 @@ class ActionGroupTest extends TestCase
         $this->assertSame('fa fa-bars', $dto->getIcon());
     }
 
-    public function testDropdownWithMainAction()
+    public function testDropdownWithMainAction(): void
     {
         $mainAction = Action::new('main_action', 'Main Action')->linkToCrudAction('edit');
         $group = ActionGroup::new('group_name', 'Action Group 1');
@@ -73,7 +73,7 @@ class ActionGroupTest extends TestCase
         $this->assertCount(2, $dto->getActions());
     }
 
-    public function testDropdownWithoutMainAction()
+    public function testDropdownWithoutMainAction(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 1');
         $group->addAction(Action::new('action1', 'Action 1')->linkToCrudAction(''));
@@ -85,7 +85,7 @@ class ActionGroupTest extends TestCase
         $this->assertCount(2, $dto->getActions());
     }
 
-    public function testSetCssClass()
+    public function testSetCssClass(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 1');
         $group->setCssClass('custom-dropdown');
@@ -96,7 +96,7 @@ class ActionGroupTest extends TestCase
         $this->assertSame('', $dto->getAddedCssClass());
     }
 
-    public function testAddCssClass()
+    public function testAddCssClass(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 1');
         $group->addCssClass('additional-class');
@@ -107,7 +107,7 @@ class ActionGroupTest extends TestCase
         $this->assertSame('additional-class', $dto->getAddedCssClass());
     }
 
-    public function testSetAndAddCssClass()
+    public function testSetAndAddCssClass(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 1');
         $group->setCssClass('custom-dropdown')->addCssClass('additional-class');
@@ -118,7 +118,7 @@ class ActionGroupTest extends TestCase
         $this->assertSame('additional-class', $dto->getAddedCssClass());
     }
 
-    public function testSetAndAddCssClassWithSpaces()
+    public function testSetAndAddCssClassWithSpaces(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 1');
         $group->setCssClass('  custom-dropdown  class1  ')->addCssClass('  additional  class2  ');
@@ -129,7 +129,7 @@ class ActionGroupTest extends TestCase
         $this->assertSame('additional  class2', $dto->getAddedCssClass());
     }
 
-    public function testHtmlAttributes()
+    public function testHtmlAttributes(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 1');
         $group->setHtmlAttributes([
@@ -145,7 +145,7 @@ class ActionGroupTest extends TestCase
         ], $dto->getHtmlAttributes());
     }
 
-    public function testAddAction()
+    public function testAddAction(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 1');
         $group->addAction(Action::new('action1', 'Action 1')->linkToCrudAction(''));
@@ -160,7 +160,7 @@ class ActionGroupTest extends TestCase
         $this->assertSame('action3', $actions[2]->getName());
     }
 
-    public function testRemoveAction()
+    public function testRemoveAction(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 1');
         $group->addAction(Action::new('action1', 'Action 1')->linkToCrudAction(''));
@@ -175,7 +175,7 @@ class ActionGroupTest extends TestCase
         $this->assertSame('action3', $actions[1]->getName());
     }
 
-    public function testAddDivider()
+    public function testAddDivider(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 3');
         $group->addAction(Action::new('action1', 'Action 1')->linkToCrudAction(''));
@@ -190,7 +190,7 @@ class ActionGroupTest extends TestCase
         $this->assertInstanceOf(ActionDto::class, $items[2]);
     }
 
-    public function testAddHeader()
+    public function testAddHeader(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 3');
         $group->addHeader('Group 1');
@@ -207,7 +207,7 @@ class ActionGroupTest extends TestCase
         $this->assertInstanceOf(ActionDto::class, $items[3]);
     }
 
-    public function testAddHeaderWithTranslatable()
+    public function testAddHeaderWithTranslatable(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 3');
         $group->addHeader(t('Group 1'));
@@ -220,7 +220,7 @@ class ActionGroupTest extends TestCase
         $this->assertEquals(t('Group 1'), $items[0]['content']);
     }
 
-    public function testMixedDropdownItems()
+    public function testMixedDropdownItems(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 3');
         $group->addHeader('Group 1');
@@ -244,7 +244,7 @@ class ActionGroupTest extends TestCase
         $this->assertCount(3, $actions);
     }
 
-    public function testDisplayIf()
+    public function testDisplayIf(): void
     {
         $entity = new class {
             public bool $isActive = true;
@@ -252,7 +252,7 @@ class ActionGroupTest extends TestCase
 
         $group = ActionGroup::new('group_name', 'Action Group 6');
         $group->addAction(Action::new('action1')->linkToCrudAction(''));
-        $group->displayIf(function ($entity) {
+        $group->displayIf(static function ($entity) {
             return null !== $entity && $entity->isActive;
         });
 
@@ -269,7 +269,7 @@ class ActionGroupTest extends TestCase
         $this->assertTrue((bool) $callable($entity));
     }
 
-    public function testSetTemplatePath()
+    public function testSetTemplatePath(): void
     {
         $group = ActionGroup::new('group_name', 'Action Group 1');
         $group->setTemplatePath('custom/dropdown_template.html.twig');
@@ -279,7 +279,7 @@ class ActionGroupTest extends TestCase
         $this->assertSame('custom/dropdown_template.html.twig', $dto->getTemplatePath());
     }
 
-    public function testDropdownWithoutActionsThrowsException()
+    public function testDropdownWithoutActionsThrowsException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The "group_name" action group must have at least one action');
@@ -288,7 +288,7 @@ class ActionGroupTest extends TestCase
         $group->getAsDto();
     }
 
-    public function testDropdownWithoutLabelAndIconThrowsException()
+    public function testDropdownWithoutLabelAndIconThrowsException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The label and icon of an action group cannot be null at the same time');
@@ -298,7 +298,7 @@ class ActionGroupTest extends TestCase
         $group->getAsDto();
     }
 
-    public function testDropdownWithFalseLabelAndIcon()
+    public function testDropdownWithFalseLabelAndIcon(): void
     {
         $group = ActionGroup::new('group_name', false, 'fa fa-cog');
         $group->addAction(Action::new('action1')->linkToCrudAction(''));

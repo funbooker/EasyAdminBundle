@@ -328,21 +328,16 @@ class App {
         });
 
         const modalTitle = document.querySelector('#batch-action-confirmation-title');
-        const titleContentWithPlaceholders = modalTitle.textContent;
+        const titleContentWithPlaceholders = modalTitle?.textContent;
 
         document.querySelectorAll('[data-action-batch]').forEach((dataActionBatch) => {
             dataActionBatch.addEventListener('click', (event) => {
                 event.preventDefault();
 
                 const actionElement = event.currentTarget;
-                // There is still a possibility that actionName will remain undefined. The title attribute is not always present on elements with the [data-action-batch] attribute.
-                const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
                 const selectedItems = document.querySelectorAll('input[type="checkbox"].form-batch-checkbox:checked');
-                modalTitle.textContent = titleContentWithPlaceholders
-                    .replace('%action_name%', actionName)
-                    .replace('%num_items%', selectedItems.length.toString());
 
-                document.querySelector('#modal-batch-action-button').addEventListener('click', () => {
+                const submitBatchAction = () => {
                     // prevent double submission of the batch action form
                     actionElement.setAttribute('disabled', 'disabled');
 
@@ -369,7 +364,25 @@ class App {
 
                     document.body.appendChild(batchForm);
                     batchForm.submit();
-                });
+                };
+
+                // check if this batch action should skip confirmation
+                if (actionElement.hasAttribute('data-action-batch-no-confirm')) {
+                    submitBatchAction();
+                } else {
+                    // show confirmation modal
+                    const actionName = actionElement.textContent.trim() || actionElement.getAttribute('title');
+
+                    // use custom message if provided, otherwise use default modal title
+                    const customMessage = actionElement.getAttribute('data-batch-action-confirm-message');
+                    const messageTemplate = customMessage ?? titleContentWithPlaceholders;
+
+                    modalTitle.textContent = messageTemplate
+                        .replace('%action_name%', actionName)
+                        .replace('%num_items%', selectedItems.length.toString());
+
+                    document.querySelector('#modal-batch-action-button').addEventListener('click', submitBatchAction);
+                }
             });
         });
     }
