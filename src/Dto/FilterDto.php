@@ -93,7 +93,7 @@ final class FilterDto
      */
     public function setCustomOptions(array $customOptions): void
     {
-        $this->customOptions = KeyValueStore::new($customOptions);
+        $this->customOptions->setAll($customOptions);
     }
 
     public function setCustomOption(string $optionName, mixed $optionValue): void
@@ -151,26 +151,4 @@ final class FilterDto
         \call_user_func($this->applyCallable, $queryBuilder, $filterDataDto, $fieldDto, $entityDto);
     }
 
-    public function getCustomOptions(): KeyValueStore
-    {
-        return $this->customOptions;
-    }
-
-    public function getCustomOption(string $optionName): mixed
-    {
-        return $this->customOptions->get($optionName);
-    }
-
-    /**
-     * @param array<string, mixed> $customOptions
-     */
-    public function setCustomOptions(array $customOptions): void
-    {
-        $this->customOptions->setAll($customOptions);
-    }
-
-    public function setCustomOption(string $optionName, mixed $optionValue): void
-    {
-        $this->customOptions->set($optionName, $optionValue);
-    }
 }
