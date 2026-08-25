@@ -73,6 +73,11 @@ return [
         'content' => 'این عملیات غیرقابل بازگشت است.',
     ],
 
+    'action_confirmation_modal' => [
+        'title' => 'آیا مطمئن هستید که می‌خواهید %action_name%؟',
+        'action' => 'تأیید',
+    ],
+
     'filter' => [
         'title' => 'فیلترها',
         'button.clear' => 'پاک کردن',
@@ -126,6 +131,10 @@ return [
         'entity_remove' => 'این آیتم را نمی توان حذف کرد زیرا آیتم‌های دیگر به آن وابسته هستند.',
         'forbidden_action' => 'عملیات درخواستی در مورد این آیتم قابل انجام نیست.',
         'insufficient_entity_permission' => 'شما اجازه دسترسی به این آیتم را ندارید.',
+        'general' => 'An error occurred while processing your request.',
+        'general_403' => 'You don\'t have permission to perform this action.',
+        'general_404' => 'The requested page could not be found.',
+        'general_500' => 'An internal error occurred while processing your request.',
     ],
 
     'autocomplete' => [

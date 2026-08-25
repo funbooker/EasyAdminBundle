@@ -207,6 +207,7 @@ body:not(.ea-content-width-full) .content-wrapper {
         position: static;
         z-index: calc(var(--zindex-modal-backdrop) - 1);
         inline-size: initial;
+        overscroll-behavior: auto;
     }
 }
 body.ea-mobile-sidebar-visible .sidebar {

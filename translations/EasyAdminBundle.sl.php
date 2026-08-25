@@ -7,7 +7,7 @@ return [
         'edit' => '%entity_label_singular%',
         'index' => '%entity_label_plural%',
         'new' => 'Dodaj %entity_label_singular%',
-        'exception' => '%count% napaka|%count% napaki|%count% napake|%count% napak',
+        'exception' => 'Napaka|Napaki|Napake|Napak',
     ],
 
     'datagrid' => [
@@ -73,6 +73,11 @@ return [
         'content' => 'Razveljavitev za to operacijo ne obstaja.',
     ],
 
+    'action_confirmation_modal' => [
+        'title' => 'Ali ste prepričani, da želite %action_name%?',
+        'action' => 'Potrdi',
+    ],
+
     'filter' => [
         'title' => 'Filtri',
         'button.clear' => 'Počisti',
@@ -133,9 +138,13 @@ return [
 
     'exception' => [
         'entity_not_found' => 'Ta element ni več na voljo.',
-        'entity_remove' => 'Tega elementac ni mogoče izbrisati, ker so ostali elementi odvisni od njega.',
+        'entity_remove' => 'Tega elementa ni mogoče izbrisati, ker so ostali elementi odvisni od njega.',
         'forbidden_action' => 'Zahtevanega dejanja ni mogoče izvršiti na tem elementu.',
         'insufficient_entity_permission' => 'Za dostop do tega elementa nimate ustreznih pravic.',
+        'general' => 'An error occurred while processing your request.',
+        'general_403' => 'You don\'t have permission to perform this action.',
+        'general_404' => 'The requested page could not be found.',
+        'general_500' => 'An internal error occurred while processing your request.',
     ],
 
     'autocomplete' => [

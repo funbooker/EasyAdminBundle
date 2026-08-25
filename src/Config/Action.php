@@ -3,12 +3,12 @@
 namespace EasyCorp\Bundle\EasyAdminBundle\Config;
 
 use EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Generator\LabelGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonElement;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonStyle;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonType;
 use EasyCorp\Bundle\EasyAdminBundle\Twig\Component\Option\ButtonVariant;
 use Symfony\Contracts\Translation\TranslatableInterface;
-use function Symfony\Component\String\u;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -67,7 +67,7 @@ final class Action implements \Stringable
         $dto = new ActionDto();
         $dto->setType(self::TYPE_ENTITY);
         $dto->setName($name);
-        $dto->setLabel($label ?? self::humanizeString($name));
+        $dto->setLabel($label ?? LabelGenerator::humanize($name));
         $dto->setIcon($icon);
         $dto->setHtmlElement(ButtonElement::A);
         $dto->setHtmlAttributes([]);
@@ -111,7 +111,7 @@ final class Action implements \Stringable
             );
         }
 
-        $this->dto->setLabel($label ?? self::humanizeString($this->dto->getName()));
+        $this->dto->setLabel($label ?? LabelGenerator::humanize($this->dto->getName()));
 
         return $this;
     }
@@ -228,7 +228,7 @@ final class Action implements \Stringable
     }
 
     /**
-     * @param array<string, string> $attributes
+     * @param array<string, string|TranslatableInterface> $attributes
      */
     public function setHtmlAttributes(array $attributes): self
     {
@@ -385,6 +385,23 @@ final class Action implements \Stringable
         return $this;
     }
 
+    /**
+     * By default, actions are executed immediately when clicked.
+     * Set to true to show a confirmation modal with a generic message.
+     * Set to a string (or TranslatableInterface) to show a custom confirmation message.
+     * The message can use placeholders: %action_name%, %entity_name%, and %entity_id%.
+     * Optionally, set a custom label for the confirmation button.
+     */
+    public function askConfirmation(
+        bool|string|TranslatableInterface $confirmation = true,
+        string|TranslatableInterface|null $buttonLabel = null,
+    ): self {
+        $this->dto->setConfirmationMessage($confirmation);
+        $this->dto->setConfirmationButtonLabel($buttonLabel);
+
+        return $this;
+    }
+
     public function getAsDto(): ActionDto
     {
         if ((!$this->dto->isDynamicLabel() && null === $this->dto->getLabel()) && null === $this->dto->getIcon()) {
@@ -396,25 +413,5 @@ final class Action implements \Stringable
         }
 
         return $this->dto;
-    }
-
-    private static function humanizeString(string $string): string
-    {
-        $uString = u($string);
-        $upperString = $uString->upper()->toString();
-
-        // this prevents humanizing all-uppercase labels (e.g. 'UUID' -> 'U u i d')
-        // and other special labels which look better in uppercase
-        if ($uString->toString() === $upperString) {
-            return $upperString;
-        }
-
-        return $uString
-            ->replaceMatches('/([A-Z])/', '_$1')
-            ->replaceMatches('/[_\s]+/', ' ')
-            ->trim()
-            ->lower()
-            ->title(true)
-            ->toString();
     }
 }

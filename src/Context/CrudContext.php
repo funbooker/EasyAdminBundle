@@ -2,9 +2,11 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Registry\AdminControllerRegistryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Registry\AdminControllerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Registry\CrudControllerRegistry;
 
 /**
@@ -19,7 +21,8 @@ final class CrudContext
         private readonly ?CrudDto $crudDto,
         private readonly ?EntityDto $entityDto,
         private readonly ?SearchDto $searchDto,
-        private readonly CrudControllerRegistry $crudControllers,
+        private readonly AdminControllerRegistryInterface $adminControllers,
+        private readonly ?CrudControllerRegistry $crudControllers = null,
     ) {
     }
 
@@ -40,7 +43,16 @@ final class CrudContext
 
     public function getCrudControllers(): CrudControllerRegistry
     {
+        if (null === $this->crudControllers) {
+            throw new \LogicException('The CrudControllerRegistry is not available. This method requires the registry to be injected in the constructor.');
+        }
+
         return $this->crudControllers;
+    }
+
+    public function getAdminControllers(): AdminControllerRegistryInterface
+    {
+        return $this->adminControllers;
     }
 
     /**
@@ -50,13 +62,17 @@ final class CrudContext
         ?CrudDto $crudDto = null,
         ?EntityDto $entityDto = null,
         ?SearchDto $searchDto = null,
+        ?AdminControllerRegistryInterface $adminControllers = null,
         ?CrudControllerRegistry $crudControllers = null,
     ): self {
+        $adminControllers ??= new AdminControllerRegistry('', [], []);
+
         return new self(
             $crudDto ?? new CrudDto(),
             $entityDto,
             $searchDto,
-            $crudControllers ?? new CrudControllerRegistry([], [], [], [])
+            $adminControllers,
+            $crudControllers ?? new CrudControllerRegistry([], [], [], []),
         );
     }
 }

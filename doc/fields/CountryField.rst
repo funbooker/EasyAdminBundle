@@ -98,6 +98,9 @@ to hide the flag::
 
     yield CountryField::new('...')->showFlag(false);
 
+    // hide it in form pages only
+    yield CountryField::new('...')->showFlag(Crud::PAGE_NEW !== $pageName && Crud::PAGE_EDIT !== $pageName);
+
 showName
 ~~~~~~~~
 
@@ -106,6 +109,9 @@ By default, the country name is displayed both in read-only pages (``index`` and
 to hide the name::
 
     yield CountryField::new('...')->showName(false);
+
+    // show it only in form pages
+    yield CountryField::new('...')->showFlag(Crud::PAGE_NEW === $pageName || Crud::PAGE_EDIT === $pageName);
 
 useAlpha3Codes
 ~~~~~~~~~~~~~~

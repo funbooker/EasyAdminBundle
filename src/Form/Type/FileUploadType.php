@@ -87,7 +87,16 @@ class FileUploadType extends AbstractType implements DataMapperInterface
             unlink($file->getPathname());
         };
 
-        $uploadFilename = static fn (UploadedFile $file): string => $file->getClientOriginalName();
+        // the return value MUST be a safe relative path:
+        //   * no ".." segments
+        //   * no leading "/" or "\"
+        //   * no Windows drive letters
+        //   * no null bytes
+        //
+        // values that violate this contract are rejected on read (see
+        // StringToFileTransformer::doTransform) and the form behaves as if
+        // no file were stored. Overrides must preserve this contract.
+        $uploadFilename = static fn (UploadedFile $file): string => basename(str_replace('\\', '/', $file->getClientOriginalName()));
 
         $uploadValidate = static function (string $filename): string {
             if (!file_exists($filename)) {

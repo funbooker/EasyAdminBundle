@@ -298,7 +298,7 @@ The arguments of the ``addTab()`` method are:
   icon for the tab or users won't be able to click on it); You can also pass
   ``string`` and ``TranslatableInterface`` variables. In both cases, if they
   contain HTML tags they will be rendered instead of escaped;
-* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
+* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome`_ icon
   (e.g. ``far fa-folder-open``); if you don't display a text label for the tab,
   make sure to display an icon or users won't be able to click on the tab.
 
@@ -394,7 +394,7 @@ The arguments of the ``addColumn()`` method are:
   or an empty string, no title is displayed. You can also pass ``string`` and
   ``TranslatableInterface`` variables. In both cases, if they contain HTML tags
   they will be rendered instead of escaped;
-* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
+* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome`_ icon
   (e.g. ``far fa-folder-open``) that is displayed next to the column label;
 * ``$help``: (type: ``?string``) an optional content that is displayed below the
   column label; it's mostly used to describe the column contents or provide further
@@ -540,7 +540,7 @@ The arguments of the ``addFieldset()`` method are:
   or an empty string, no title is displayed. You can also pass ``string`` and
   ``TranslatableInterface`` variables. In both cases, if they contain HTML tags
   they will be rendered instead of escaped;
-* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome icon`_
+* ``$icon``: (type: ``?string``) the full CSS class of a `FontAwesome`_ icon
   (e.g. ``far fa-folder-open``) that is displayed next to the fieldset label.
 
 .. note::
@@ -1099,19 +1099,87 @@ field DTO. For example, in a Twig template:
 Field Configurators
 -------------------
 
-Some default options of some fields depend on the value of the entity
-property, which is only available during runtime. That's why you can optionally
-define a **field configurator**, which is a class that updates the config of the
-field before rendering them.
+Sometimes, field options depend on the value of the entity property, which is
+only available at runtime. To handle this, you can define a **field configurator**,
+a class that updates the field configuration before it is rendered.
 
-EasyAdmin defines lots of configurators for its built-in fields. You can create
-your own configurators too (either to configure your own fields and/or the
-built-in fields). Field configurators are classes that implement
-``EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface``.
+EasyAdmin defines many configurators for its built-in fields. You can create
+your own configurators too, either to configure your own fields or to tweak
+the built-in ones. A field configurator is a class that implements
+``EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface``::
 
-Once implemented, define a Symfony service for your configurator and tag it with
-the ``ea.field_configurator`` tag. Optionally you can define the ``priority``
-attribute of the tag to run your configurator before or after the built-in ones.
+    interface FieldConfiguratorInterface
+    {
+        // return TRUE to apply this configurator; return FALSE otherwise
+        // e.g. you can match the field FQCN, its property name, or a custom option
+        public function supports(FieldDto $field, EntityDto $entityDto): bool;
+
+        // use it to update the value of any option of the given $field object
+        public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void;
+    }
+
+The following example masks the local part of every ``EmailField`` value on the
+index page (``jane.doe@example.com`` is rendered as ``j***@example.com``), so
+the full address is only visible on the detail and edit pages::
+
+    namespace App\Admin\Configurator;
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+    use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+    use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldConfiguratorInterface;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+    use EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto;
+    use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+
+    final class MaskedEmailConfigurator implements FieldConfiguratorInterface
+    {
+        public function supports(FieldDto $field, EntityDto $entityDto): bool
+        {
+            return EmailField::class === $field->getFieldFqcn();
+        }
+
+        public function configure(FieldDto $field, EntityDto $entityDto, AdminContext $context): void
+        {
+            if (Crud::PAGE_INDEX !== $context->getCrud()->getCurrentPage()) {
+                return;
+            }
+
+            $email = (string) $field->getValue();
+            if (!str_contains($email, '@')) {
+                return;
+            }
+
+            [$local, $domain] = explode('@', $email, 2);
+            $field->setFormattedValue(substr($local, 0, 1).'***@'.$domain);
+        }
+    }
+
+.. tip::
+
+    In addition to matching the field FQCN, in ``supports()`` you can use other
+    criteria: matching a property name (``'propertyName' === $field->getProperty()``),
+    matching the value of a built-in or custom option
+    (``true === $field->getCustomOption('option-name')``), etc.
+
+With the default Symfony services configuration (autowiring and autoconfiguration
+enabled), the configurator is picked up automatically: EasyAdmin applies the
+``ea.field_configurator`` tag to any service implementing ``FieldConfiguratorInterface``.
+Otherwise, tag it manually:
+
+.. code-block:: yaml
+
+    # config/services.yaml
+    services:
+        App\Admin\Configurator\PremiumFieldConfigurator:
+            tags:
+                - { name: ea.field_configurator }
+
+Use the tag's ``priority`` attribute to run before or after other configurators.
+The built-in ``CommonPreConfigurator`` runs first (priority ``9999``) and
+``CommonPostConfigurator`` runs last (``-9999``); yours runs between them by default::
+
+    tags:
+        - { name: ea.field_configurator, priority: -100 }
 
 .. _`PropertyAccess component`: https://symfony.com/doc/current/components/property_access.html
 .. _`PHP generators`: https://www.php.net/manual/en/language.generators.overview.php

@@ -73,6 +73,11 @@ return [
         'content' => 'Du kan ikke angre dette valget.',
     ],
 
+    'action_confirmation_modal' => [
+        'title' => 'Er du sikker på at du vil %action_name%?',
+        'action' => 'Bekreft',
+    ],
+
     'filter' => [
         'title' => 'Filtre',
         'button.clear' => 'Tøm',
@@ -135,6 +140,10 @@ return [
         'entity_remove' => 'Elementet kan ikke slettes fordi andre elementer er avhengig av det.',
         'forbidden_action' => 'Den angitte handlingen kan ikke utføres på dette elementet.',
         'insufficient_entity_permission' => 'Du har ikke tilgang til dette elementet.',
+        'general' => 'Det oppsto en feil under behandlingen av forespørselen din.',
+        'general_403' => 'Du har ikke tillatelse til å utføre denne handlingen.',
+        'general_404' => 'Den forespurte siden ble ikke funnet.',
+        'general_500' => 'Det oppsto en intern feil under behandlingen av forespørselen din.',
     ],
 
     'autocomplete' => [

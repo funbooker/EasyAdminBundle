@@ -73,6 +73,11 @@ return [
         'content' => 'Tidak ada pembatalan untuk operasi ini.',
     ],
 
+    'action_confirmation_modal' => [
+        'title' => 'Apakah Anda yakin ingin %action_name%?',
+        'action' => 'Konfirmasi',
+    ],
+
     'filter' => [
         'title' => 'Filter',
         'button.clear' => 'Bersihkan',
@@ -136,6 +141,10 @@ return [
         'entity_remove' => 'Item ini tidak dapat dihapus karena item lain bergantung padanya.',
         'forbidden_action' => 'Tindakan yang diminta tidak dapat dilakukan pada item ini.',
         'insufficient_entity_permission' => 'Anda tidak memiliki izin untuk mengakses item ini.',
+        'general' => 'An error occurred while processing your request.',
+        'general_403' => 'You don\'t have permission to perform this action.',
+        'general_404' => 'The requested page could not be found.',
+        'general_500' => 'An internal error occurred while processing your request.',
     ],
 
     'autocomplete' => [

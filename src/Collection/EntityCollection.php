@@ -2,24 +2,23 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Collection;
 
-use EasyCorp\Bundle\EasyAdminBundle\Contracts\Collection\CollectionInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- *
- * @implements CollectionInterface<string, EntityDto>
  */
-final class EntityCollection implements CollectionInterface
+final class EntityCollection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
      * @param array<string, EntityDto> $entities
      */
-    private function __construct(private array $entities)
+    public function __construct(private array $entities = [])
     {
     }
 
     /**
+     * @deprecated since 4.28.2 and removed in 5.0.0, use FilterCollection::__construct() instead.
+     *
      * @param array<string, EntityDto> $entities
      */
     public static function new(array $entities): self

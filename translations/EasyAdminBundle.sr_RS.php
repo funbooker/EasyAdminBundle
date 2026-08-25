@@ -73,6 +73,11 @@ return [
         'content' => 'Ova operacija je nepovratna.',
     ],
 
+    'action_confirmation_modal' => [
+        'title' => 'Da li ste sigurni da želite da %action_name%?',
+        'action' => 'Potvrdi',
+    ],
+
     'filter' => [
         'title' => 'Filteri',
         'button.clear' => 'Poništi postojeće filtere',
@@ -125,6 +130,10 @@ return [
         'entity_remove' => 'Ovaj zapis ne može biti izbrisan zato što su drugi zapisi vezani za njega.',
         'forbidden_action' => 'Ova akcija ne može biti primenjena na ovaj zapis.',
         'insufficient_entity_permission' => 'Nemate dovoljne privilegije da vidite ovaj zapis.',
+        'general' => 'An error occurred while processing your request.',
+        'general_403' => 'You don\'t have permission to perform this action.',
+        'general_404' => 'The requested page could not be found.',
+        'general_500' => 'An internal error occurred while processing your request.',
     ],
 
     'autocomplete' => [

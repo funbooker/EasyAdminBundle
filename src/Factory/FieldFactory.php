@@ -39,7 +39,7 @@ final class FieldFactory
      */
     private static array $doctrineTypeToFieldFqcn = [
         'array' => ArrayField::class, // don't use Types::ARRAY because it was removed in Doctrine DBAL 4
-        Types::BIGINT => TextField::class,
+        Types::BIGINT => IntegerField::class,
         Types::BINARY => TextareaField::class,
         Types::BLOB => TextareaField::class,
         Types::BOOLEAN => BooleanField::class,

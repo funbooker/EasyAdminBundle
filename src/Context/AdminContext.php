@@ -4,6 +4,7 @@ namespace EasyCorp\Bundle\EasyAdminBundle\Context;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Context\AdminContextInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Registry\AdminControllerRegistryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -85,8 +86,23 @@ final class AdminContext implements AdminContextInterface
         return $this->crudContext->getSearch();
     }
 
+    public function getAdminControllers(): AdminControllerRegistryInterface
+    {
+        return $this->crudContext->getAdminControllers();
+    }
+
+    /**
+     * @deprecated since 4.28.1, use getAdminControllers() instead
+     */
     public function getCrudControllers(): CrudControllerRegistry
     {
+        trigger_deprecation(
+            'easycorp/easyadmin-bundle',
+            '4.28.1',
+            'The "%s()" method is deprecated. Use "getAdminControllers()" instead.',
+            __METHOD__
+        );
+
         return $this->crudContext->getCrudControllers();
     }
 
@@ -183,6 +199,30 @@ final class AdminContext implements AdminContextInterface
     public function getTemplatePath(string $templateName): string
     {
         return $this->i18nContext->getTemplatePath($templateName);
+    }
+
+    public function isUseEntityTranslations(): bool
+    {
+        return $this->dashboardContext->getDashboardDto()->isUseEntityTranslations();
+    }
+
+    /**
+     * Returns a new AdminContext with a different EntityDto.
+     * Useful for nested CRUD operations (e.g., CollectionField).
+     */
+    public function withEntity(EntityDto $entityDto): self
+    {
+        return new self(
+            $this->requestContext,
+            new CrudContext(
+                $this->crudContext->getCrud(),
+                $entityDto,
+                $this->crudContext->getSearch(),
+                $this->crudContext->getAdminControllers(),
+            ),
+            $this->dashboardContext,
+            $this->i18nContext,
+        );
     }
 
     /**

@@ -73,6 +73,11 @@ return [
         'content' => 'Esta acción non se pode desfacer.',
     ],
 
+    'action_confirmation_modal' => [
+        'title' => 'Estás seguro de que queres %action_name%?',
+        'action' => 'Confirmar',
+    ],
+
     'filter' => [
         // 'title' => '',
         // 'button.clear' => '',
@@ -125,6 +130,10 @@ return [
         'entity_remove' => 'Este elemento non se pode eliminar porque outros elementos dependen del.',
         'forbidden_action' => 'Non se pode realizar a acción solicitada neste elemento.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'general' => 'Produciuse un erro ao procesar a solicitude.',
+        'general_403' => 'Non tes permiso para realizar esta acción.',
+        'general_404' => 'Non se atopou a páxina solicitada.',
+        'general_500' => 'Produciuse un erro interno ao procesar a solicitude.',
     ],
 
     'autocomplete' => [

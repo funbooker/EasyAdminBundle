@@ -61,11 +61,8 @@ src/
 ├── Twig/               # Twig extensions and components
 templates/              # Twig templates
 tests/
-├── TestApplication/    # Main test app with fixtures
-├── PrettyUrlsTestApplication/  # Pretty URLs feature tests
-├── AdminRouteTestApplication/  # Admin route tests
-├── Controller/         # Controller tests
-├── Field/              # Field tests
+├── Functional/         # Functional tests
+├── TestUtils/          # Tests for the utility classes used in tests
 ├── Unit/               # Unit tests
 ```
 
@@ -82,9 +79,9 @@ yarn install                  # Install JS dependencies
 Before submitting changes, run these commands to verify them:
 
 If PHP code changed:
-- [ ] `./vendor/bin/phpstan analyse` passes with no errors
-- [ ] `php-cs-fixer fix --dry-run` shows no issues
-- [ ] Run tests with:
+- `./vendor/bin/phpstan analyse` passes with no errors
+- `php-cs-fixer fix --dry-run` shows no issues
+- Run tests with:
   ```bash
   ./vendor/bin/simple-phpunit                    # All tests
   ./vendor/bin/simple-phpunit tests/Field/       # Specific directory
@@ -93,18 +90,18 @@ If PHP code changed:
   ```
 
 If JS/CSS changed:
-- [ ] `yarn ci` passes with no errors
-- [ ] `yarn biome check --write` shows no issues
-- [ ] `make build-assets` completed successfully
+- `yarn ci` passes with no errors
+- `yarn biome check --write` shows no issues
+- `make build-assets` completed successfully
 
 If Twig templates changed:
-- [ ] `./vendor/bin/twig-cs-fixer lint templates/` passes
+- `./vendor/bin/twig-cs-fixer lint templates/` passes
 
 If documentation changed:
-- [ ] `make linter-docs` to validate RST syntax
+- `make linter-docs` to validate RST syntax
 
 If translations changed:
-- [ ] all locales updated consistently; use English as placeholder if unsure
+- all locales updated consistently; use English as placeholder if unsure
 
 ## Git and Pull Requests
 
@@ -135,6 +132,7 @@ make checks-before-pr
 - Braces required for all control structures
 - Trailing commas in multi-line arrays
 - Blank line before `return` (unless only statement in block)
+- Don't add comments in classes as separators (e.g. `// === Methods for dashboards ===`)
 
 ### Naming
 - Variables/methods: `camelCase`
@@ -167,6 +165,7 @@ make checks-before-pr
 - Error messages: concise but precise and actionable (e.g. include class names, file paths)
 - Handle exceptions explicitly (no silent catches)
 - Config files in PHP format (`config/services.php`, `translations/*.php`)
+- Prefer project constants (Action::EDIT, EA::QUERY) over hardcoded strings
 
 ### PHPDoc
 - No `@return` for void methods
@@ -214,10 +213,10 @@ make checks-before-pr
 - Use simple names: 'Action 1', 'Field 1', not realistic data
 - Add `void` return type to all test methods
 - Name tests descriptively without `test` prefix duplication
+- Use `@testWith` and data providers when possible to avoid duplicated tests
 
 ### Test Fixtures
-- Entity fixtures in `tests/TestApplication/src/Entity/`
-- CRUD controllers in `tests/TestApplication/src/Controller/`
+- Data fixtures in each functional app in `tests/Functional/Apps/`
 - Doctrine fixtures loaded via `DoctrineFixturesBundle`
 - Deprecation baseline: `tests/baseline-ignore.txt`
 

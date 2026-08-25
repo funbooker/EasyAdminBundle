@@ -176,9 +176,11 @@ body.ea-sidebar-width-compact .sidebar #main-menu .menu .menu-item {
     }
     body.ea-sidebar-width-compact #main-menu .menu .menu-item .menu-item-label {
         flex: 1;
+        line-height: 21px;
     }
     body.ea-sidebar-width-compact #main-menu .menu .menu-item .menu-item-contents {
         align-items: center;
+        block-size: 35px;
         border-radius: 0 var(--border-radius) var(--border-radius) 0;
         display: flex;
         min-inline-size: max-content;

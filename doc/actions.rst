@@ -59,6 +59,12 @@ These are the built-in actions included by default in each page:
   * Added by default: ``Action::SAVE_AND_RETURN``, ``Action::SAVE_AND_ADD_ANOTHER``
   * Other available actions: ``Action::SAVE_AND_CONTINUE``, ``Action::INDEX``
 
+.. note::
+
+    By default, clicking a row in the ``index`` page navigates to ``edit`` action
+    (or ``detail`` if edit is unavailable). See :ref:`default row action <default-row-action>`
+    to customize this.
+
 Adding Actions
 --------------
 
@@ -187,7 +193,7 @@ to users::
 
     public function configureActions(Actions $actions): Actions
     {
-        $viewInvoice = Action::new('View Invoice', 'fas fa-file-invoice')
+        $viewInvoice = Action::new('invoice', 'View Invoice', 'fas fa-file-invoice')
             ->displayIf(static fn (Invoice $invoice): bool => $invoice->isPaid())
 
         return $actions
@@ -200,6 +206,76 @@ to users::
     The ``displayIf()`` method also works for :ref:`global actions <global-actions>`.
     However, your closure won't receive the object that represents the current
     entity because global actions are not associated to any specific entity.
+
+Action Confirmation
+-------------------
+
+By default, actions are executed immediately when clicked. The only exception
+is the built-in ``delete`` action, which shows a confirmation message. For potentially
+destructive or important actions, you can require user confirmation before execution.
+
+To enable confirmation for any action, use the ``askConfirmation()`` method::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $archiveAction = Action::new('archive', 'Archive')
+            ->linkToCrudAction('archive')
+            ->askConfirmation();
+
+        return $actions
+            ->add(Crud::PAGE_INDEX, $archiveAction);
+    }
+
+This will display a confirmation modal with a generic message before executing
+the action. You can customize the confirmation message by passing a string::
+
+    $archiveAction = Action::new('archive', 'Archive')
+        ->linkToCrudAction('archive')
+        ->askConfirmation('Are you sure you want to archive this item?');
+
+The confirmation message supports placeholders that are replaced with actual
+values: ``%action_name%`` (the action label), ``%entity_name%`` (the entity
+label in singular), and ``%entity_id%`` (the entity ID)::
+
+    $archiveAction = Action::new('archive', 'Archive')
+        ->linkToCrudAction('archive')
+        ->askConfirmation('Are you sure you want to %action_name% "%entity_name%" #%entity_id%?');
+
+For translatable messages, pass a ``TranslatableInterface`` object::
+
+    use function Symfony\Component\Translation\t;
+
+    $archiveAction = Action::new('archive', 'Archive')
+        ->linkToCrudAction('archive')
+        ->askConfirmation(t('action.archive.confirm'));
+
+You can also customize the confirmation button label by passing a second parameter::
+
+    $publishAction = Action::new('publish', 'Publish')
+        ->linkToCrudAction('publish')
+        ->askConfirmation('Do you accept publishing this article?', 'Accept');
+
+This is useful when the default "Confirm" label doesn't match the action context.
+Both parameters support translatable messages::
+
+    $publishAction = Action::new('publish', 'Publish')
+        ->linkToCrudAction('publish')
+        ->askConfirmation(t('action.publish.confirm'), t('action.publish.button'));
+
+The ``delete`` action shows a confirmation message by default. Although it's
+strongly recommended to keep this behavior, you can disable the confirmation dialog::
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
+                return $action->askConfirmation(false);
+            });
+    }
 
 Disabling Actions
 -----------------
@@ -627,13 +703,18 @@ The following example shows all kinds of actions in practice::
             ;
         }
 
-        public function renderInvoice(AdminContext $context)
+        #[AdminRoute('/{entityId:order.id}/invoice')]
+        public function renderInvoice(Order $order): Response
         {
-            $order = $context->getEntity()->getInstance();
-
-            // add your logic here...
+            // add your custom order logic here...
         }
     }
+
+Apply the ``#[AdminRoute]`` attribute to turn CRUD controller methods into custom
+CRUD actions with their own admin routes. In the above example, if the dashboard
+uses ``admin`` as the main route name, EasyAdmin generates a route named
+``admin_order_render_invoice`` with the path ``/admin/order/{entityId}/invoice``.
+You can :ref:`customize the name, path, and methods <crud_routes>` of this route.
 
 .. tip::
 
@@ -641,41 +722,6 @@ The following example shows all kinds of actions in practice::
     When actions are defined as methods of CRUD controllers, they can use any
     of the shortcuts and utilities available in regular `Symfony controllers`_,
     such as ``$this->render()``, ``$this->redirect()``, and others.
-
-It's recommended to apply the ``#[AdminRoute]`` attribute to your custom actions
-to :ref:`customize their route name, path and methods <crud_routes>`. This is
-recommended even for custom actions defined as methods in the CRUD controllers::
-
-    namespace App\Controller\Admin;
-
-    use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
-    use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-    use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-    use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-
-    class OrderCrudController extends AbstractCrudController
-    {
-        public function configureActions(Actions $actions): Actions
-        {
-            $viewInvoice = Action::new('viewInvoice', 'Invoice', 'fa fa-file-invoice')
-                ->linkToCrudAction('renderInvoice');
-
-            // ...
-        }
-
-        // ...
-
-        #[AdminRoute(path: '/invoice', name: 'view_invoice')]
-        public function renderInvoice(AdminContext $context)
-        {
-            // if the dashboard uses 'admin' as the main route name, the resulting
-            // route of this action will be:
-            //   path: /admin/order/invoice
-            //   name: admin_order_view_invoice
-
-            // ...
-        }
-    }
 
 .. _global-actions:
 
@@ -887,7 +933,6 @@ for the actions using the ``#[AdminRoute]`` attribute::
     use App\Stats\BusinessStatsCalculator;
     use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
     use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-    use Symfony\Component\Routing\Attribute\Route;
     use Symfony\Component\Security\Http\Attribute\IsGranted;
 
     #[IsGranted('ROLE_ADMIN')]

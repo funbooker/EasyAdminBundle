@@ -462,6 +462,37 @@ directory. The only limitation is that EasyAdmin doesn't use Webpack Encore yet 
 loading the assets, so you can't use features like versioning. This will be
 fixed in future versions.
 
+Content Security Policy (CSP) Support
+-------------------------------------
+
+`Content Security Policy`_ (CSP) is a security feature that helps prevent cross-site
+scripting (XSS) and other code injection attacks. When your application uses strict
+CSP headers, all inline scripts and dynamically loaded scripts must include a
+cryptographic nonce to be executed by the browser.
+
+EasyAdmin fully supports CSP nonces. First, install and configure `NelmioSecurityBundle`_
+in your application. Then, EasyAdmin will automatically detect the ``csp_nonce()`` Twig
+function and add the nonce attribute to all its script tags.
+
+Using CSP Nonces in Custom Templates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you :ref:`override EasyAdmin templates <template-customization>` and add your own
+``<script>`` tags, use the ``{% guard %}`` Twig tag to conditionally include the nonce.
+This ensures your templates work both with and without NelmioSecurityBundle:
+
+.. code-block:: twig
+
+    {% guard function csp_nonce %}
+        <script src="{{ asset('js/custom.js') }}" nonce="{{ csp_nonce('script') }}"></script>
+    {% else %}
+        <script src="{{ asset('js/custom.js') }}"></script>
+    {% endguard %}
+
+The ``{% guard function csp_nonce %}`` syntax checks if the ``csp_nonce()`` function
+is available before using it, allowing graceful fallback when NelmioSecurityBundle
+is not installed.
+
 .. _`Bootstrap 5`: https://github.com/twbs/bootstrap
 .. _`Sass`: https://sass-lang.com/
 .. _`Webpack`: https://webpack.js.org/
@@ -473,3 +504,5 @@ fixed in future versions.
 .. _`FontAwesome icons`: https://fontawesome.com/v6/search?m=free
 .. _`Symfony UX Icons`: https://symfony.com/bundles/ux-icons/current/index.html
 .. _`Tabler`: https://tabler.io/icons
+.. _`Content Security Policy`: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+.. _`NelmioSecurityBundle`: https://github.com/nelmio/NelmioSecurityBundle

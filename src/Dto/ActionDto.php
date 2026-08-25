@@ -39,6 +39,9 @@ final class ActionDto
     private ButtonType $buttonType = ButtonType::Submit;
     private ButtonVariant $variant = ButtonVariant::Default;
     private ButtonStyle $style = ButtonStyle::Solid;
+    private bool|string|TranslatableInterface $confirmationMessage = false;
+    private string|TranslatableInterface|null $displayableConfirmationMessage = null;
+    private string|TranslatableInterface|null $confirmationButtonLabel = null;
 
     public function getType(): string
     {
@@ -354,6 +357,41 @@ final class ActionDto
         return ButtonStyle::Text === $this->style;
     }
 
+    public function getConfirmationMessage(): bool|string|TranslatableInterface
+    {
+        return $this->confirmationMessage;
+    }
+
+    public function setConfirmationMessage(bool|string|TranslatableInterface $message): void
+    {
+        $this->confirmationMessage = $message;
+    }
+
+    public function hasConfirmation(): bool
+    {
+        return false !== $this->confirmationMessage;
+    }
+
+    public function getDisplayableConfirmationMessage(): string|TranslatableInterface|null
+    {
+        return $this->displayableConfirmationMessage;
+    }
+
+    public function setDisplayableConfirmationMessage(string|TranslatableInterface|null $message): void
+    {
+        $this->displayableConfirmationMessage = $message;
+    }
+
+    public function getConfirmationButtonLabel(): string|TranslatableInterface|null
+    {
+        return $this->confirmationButtonLabel;
+    }
+
+    public function setConfirmationButtonLabel(string|TranslatableInterface|null $label): void
+    {
+        $this->confirmationButtonLabel = $label;
+    }
+
     /**
      * @internal
      */
@@ -405,6 +443,10 @@ final class ActionDto
 
         if (null !== $this->displayCallable) {
             $action->displayIf($this->displayCallable);
+        }
+
+        if (false !== $this->confirmationMessage) {
+            $action->askConfirmation($this->confirmationMessage, $this->confirmationButtonLabel);
         }
 
         return $action;

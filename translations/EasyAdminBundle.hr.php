@@ -73,6 +73,11 @@ return [
         'content' => 'Izbrisana stavka se ne može povratiti',
     ],
 
+    'action_confirmation_modal' => [
+        'title' => 'Jeste li sigurni da želite %action_name%?',
+        'action' => 'Potvrdi',
+    ],
+
     'filter' => [
         // 'title' => '',
         // 'button.clear' => '',
@@ -135,6 +140,10 @@ return [
         'entity_remove' => 'Ta stavka ne može se izbrisati jer ovise o njoj ostale stavke.',
         'forbidden_action' => 'Zatražena radnja ne može se izvršiti na ovoj stavci.',
         // 'insufficient_entity_permission' => 'You don't have permission to access this item.',
+        'general' => 'An error occurred while processing your request.',
+        'general_403' => 'You don\'t have permission to perform this action.',
+        'general_404' => 'The requested page could not be found.',
+        'general_500' => 'An internal error occurred while processing your request.',
     ],
 
     'autocomplete' => [

@@ -73,6 +73,11 @@ return [
         'content' => 'There is no undo for this operation.',
     ],
 
+    'action_confirmation_modal' => [
+        'title' => 'Are you sure you want to %action_name%?',
+        'action' => 'Confirm',
+    ],
+
     'filter' => [
         'title' => 'Filters',
         'button.clear' => 'Clear',
@@ -136,6 +141,10 @@ return [
         'entity_remove' => 'This item can\'t be deleted because other items depend on it.',
         'forbidden_action' => 'The requested action can\'t be performed on this item.',
         'insufficient_entity_permission' => 'You don\'t have permission to access this item.',
+        'general' => 'An error occurred while processing your request.',
+        'general_403' => 'You don\'t have permission to perform this action.',
+        'general_404' => 'The requested page could not be found.',
+        'general_500' => 'An internal error occurred while processing your request.',
     ],
 
     'autocomplete' => [

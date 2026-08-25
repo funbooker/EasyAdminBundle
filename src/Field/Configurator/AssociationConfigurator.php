@@ -64,7 +64,7 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
         // the target CRUD controller can be NULL; in that case, field value doesn't link to the related entity
         $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER)
-            ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($entityDto->getClassMetadata()->getAssociationTargetClass($propertyName));
+            ?? $context->getAdminControllers()->findCrudControllerByEntity($entityDto->getClassMetadata()->getAssociationTargetClass($propertyName));
 
         if (true === $field->getCustomOption(AssociationField::OPTION_RENDER_AS_EMBEDDED_FORM)) {
             if (false === $entityDto->getClassMetadata()->isSingleValuedAssociation($propertyName)) {
@@ -105,6 +105,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $field->setFormTypeOption('attr.data-ea-widget', 'ea-autocomplete');
         }
 
+        // both autocomplete(renderAsHtml: true) and renderAsHtml(true) set the same option.
+        // OPTION_ESCAPE_HTML_CONTENTS has inverted logic (true = escape, false = render as HTML)
         $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', true === $field->getCustomOption(AssociationField::OPTION_ESCAPE_HTML_CONTENTS) ? 'false' : 'true');
 
         // check for embedded associations
@@ -132,6 +134,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             $targetCrudControllerFqcn = $field->getCustomOption(AssociationField::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER);
 
             $field->setFormTypeOptionIfNotSet('class', $targetEntityFqcn);
+
+            $this->configurePreferredChoices($field);
 
             try {
                 if (null !== $entityDto->getInstance()) {
@@ -183,13 +187,23 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             }
 
             $field->setFormTypeOption('attr.data-ea-autocomplete-endpoint-url', $autocompleteEndpointUrl ?? null);
+
+            // pass autocomplete options to render the selected item the same as the other entries
+            $autocompleteCallback = $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_CALLBACK);
+            $autocompleteTemplate = $field->getCustomOption(AssociationField::OPTION_AUTOCOMPLETE_TEMPLATE);
+
+            if (null !== $autocompleteCallback) {
+                $field->setFormTypeOption('autocomplete_callback', $autocompleteCallback);
+            } elseif (null !== $autocompleteTemplate) {
+                $field->setFormTypeOption('autocomplete_template', $autocompleteTemplate);
+            }
         } else {
             $field->setFormTypeOptionIfNotSet('query_builder', static function (EntityRepository $repository) use ($field) {
                 // TODO: should this use `createIndexQueryBuilder` instead, so we get the default ordering etc.?
                 // it would then be identical to the one used in autocomplete action, but it is a bit complex getting it in here
                 $queryBuilder = $repository->createQueryBuilder('entity');
                 if (null !== $queryBuilderCallable = $field->getCustomOption(AssociationField::OPTION_QUERY_BUILDER_CALLABLE)) {
-                    $queryBuilderCallable($queryBuilder);
+                    $queryBuilder = $queryBuilderCallable($queryBuilder) ?? $queryBuilder;
                 }
 
                 return $queryBuilder;
@@ -235,6 +249,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
             : $this->entityFactory->createForEntityInstance($field->getValue());
         $field->setFormTypeOptionIfNotSet('class', $targetEntityDto->getFqcn());
 
+        $this->configurePreferredChoices($field);
+
         try {
             $field->setCustomOption(AssociationField::OPTION_RELATED_URL, $this->generateLinkToAssociatedEntity($targetCrudControllerFqcn, $targetEntityDto));
         } catch (RouteNotFoundException $e) {
@@ -253,6 +269,8 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
 
         /* @var PersistentCollection $collection */
         $field->setFormTypeOptionIfNotSet('class', $entityDto->getClassMetadata()->getAssociationTargetClass($field->getProperty()));
+
+        $this->configurePreferredChoices($field);
 
         if (null === $field->getTextAlign()) {
             $field->setTextAlign(TextAlign::RIGHT);
@@ -368,11 +386,19 @@ final class AssociationConfigurator implements FieldConfiguratorInterface
         $fields = $crudController->configureFields($crudControllerPageName);
 
         if (null === $this->fieldFactory) {
-            $this->entityFactory->processFields($entityDto, FieldCollection::new($fields), $crudPageName);
+            $this->entityFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
         } else {
-            $this->fieldFactory->processFields($entityDto, FieldCollection::new($fields), $crudPageName);
+            $this->fieldFactory->processFields($entityDto, new FieldCollection($fields), $crudPageName);
         }
 
         return $entityDto;
+    }
+
+    private function configurePreferredChoices(FieldDto $field): void
+    {
+        $preferredChoices = $field->getCustomOption(AssociationField::OPTION_PREFERRED_CHOICES);
+        if (null !== $preferredChoices) {
+            $field->setFormTypeOptionIfNotSet('preferred_choices', $preferredChoices);
+        }
     }
 }

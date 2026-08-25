@@ -472,6 +472,70 @@ query, the optional :doc:`filters </filters>` and the pagination. If you need to
 fully customize this query, override the ``createIndexQueryBuilder()`` method in
 your CRUD controller.
 
+.. _crud-autocomplete:
+
+Autocomplete Options
+~~~~~~~~~~~~~~~~~~~~
+
+:doc:`Association fields </fields/AssociationField>` allow you to
+:ref:`customize the autocomplete display <field-association-autocomplete>` per field.
+You can also set a default autocomplete display for all association fields in a
+CRUD controller. This default display is applied to all fields that don't
+configure their own autocomplete, giving them a consistent formatting.
+
+There are two ways of configuring the autocomplete: using a **callback** (useful for
+simple formatting) and using a **Twig template** (allowing you to use HTML tags for
+more advanced formatting).
+
+**1) Using a Callback**
+
+Define a callback that applies to all autocomplete fields::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->autocomplete(
+                callback: static fn ($entity): string => method_exists($entity, 'getFullName') ? $entity->getFullName() : (string) $entity
+            )
+        ;
+    }
+
+The ``autocomplete()`` method also accepts an ``enable`` parameter to
+conditionally configure autocomplete::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        $entityCount = $this->entityManager->getRepository($this->getEntityFqcn())->count([]);
+
+        return $crud
+            ->autocomplete(
+                enable: $entityCount > 1_000,
+                callback: static fn ($entity): string => (string) $entity
+            )
+        ;
+    }
+
+**2) Using a Twig Template**
+
+Define a default template for all autocomplete fields::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->autocomplete(
+                template: 'admin/autocomplete/default.html.twig',
+                renderAsHtml: false
+            )
+        ;
+    }
+
+The template receives the entity as the ``entity`` variable. When
+``renderAsHtml`` is ``false`` (the default), the output is escaped to
+prevent XSS attacks. Set it to ``true`` only when you trust the content
+and need to display HTML.
+
 Templates and Form Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -508,6 +572,88 @@ Templates and Form Options
             );
         ;
     }
+
+.. _default-row-action:
+
+Default Row Action
+~~~~~~~~~~~~~~~~~~
+
+By default, when you click on any row of the ``index`` page, you navigate to
+the ``edit`` page of that entity. If the ``edit`` action is not available, it
+falls back to the ``detail`` action. This behavior is called the "default row action"
+and you can configure it with the ``setDefaultRowAction()`` method::
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // this is the default behavior: first try 'edit', then fallback to 'detail'
+            ->setDefaultRowAction([Action::EDIT, Action::DETAIL])
+
+            // use a single action (no fallback)
+            ->setDefaultRowAction(Action::EDIT)
+
+            // navigate to 'detail' only
+            ->setDefaultRowAction(Action::DETAIL)
+
+            // use any action name, including custom actions
+            ->setDefaultRowAction('review')
+
+            // define a custom fallback chain (first available action wins)
+            ->setDefaultRowAction([Action::DETAIL, 'preview', Action::EDIT])
+
+            // pass null to disable the row click behavior entirely
+            ->setDefaultRowAction(null)
+        ;
+    }
+
+.. note::
+
+    If none of the configured actions (in the fallback chain) are available for
+    some entity (disabled action, no permission, or condition not met), the row
+    won't be clickable for that entity. This also applies to actions defined
+    inside action groups.
+
+.. tip::
+
+    The default row action can be configured globally in your dashboard (so it
+    applies to all CRUD controllers) and overridden in specific CRUD controllers::
+
+        // in your Dashboard
+        public function configureCrud(): Crud
+        {
+            return Crud::new()
+                // all CRUD controllers will navigate to 'detail' by default
+                ->setDefaultRowAction(Action::DETAIL)
+            ;
+        }
+
+        // in a specific CRUD controller
+        public function configureCrud(Crud $crud): Crud
+        {
+            return $crud
+                // only this CRUD controller will navigate to 'edit'
+                ->setDefaultRowAction(Action::EDIT)
+            ;
+        }
+
+.. tip::
+
+    By default, clicking on a row executes the default row action.
+    If you prefer to require a double click instead, configure this
+    behavior with the ``setDefaultRowActionTrigger()`` method::
+
+        public function configureCrud(Crud $crud): Crud
+        {
+            return $crud
+                // require a double click to execute the default row action
+                ->setDefaultRowActionTrigger(ClickTrigger::DOUBLE)
+            ;
+        }
+
+The row click behavior is fully accessible via keyboard (using Enter or Space keys).
+Clicks on checkboxes, buttons, links, or any action elements within the row won't
+trigger the navigation to preserve the expected behavior of those elements.
+Also, rows selected in batch mode won't navigate when clicked.
 
 Other Options
 ~~~~~~~~~~~~~

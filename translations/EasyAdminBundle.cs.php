@@ -73,6 +73,11 @@ return [
         'content' => 'Tuto akci není možné vrátit zpět.',
     ],
 
+    'action_confirmation_modal' => [
+        'title' => 'Opravdu chcete %action_name%?',
+        'action' => 'Potvrdit',
+    ],
+
     'filter' => [
         'title' => 'Filtry',
         'button.clear' => 'Zrušit',
@@ -135,6 +140,10 @@ return [
         'entity_remove' => 'Tato položka nemůže být smazána, neboť na ní závisí ostatní položky.',
         'forbidden_action' => 'Na této položce nemůže být provedena požadovaná akce.',
         'insufficient_entity_permission' => 'Nemáte dostatečná oprávnění pro přístup k této položce.',
+        'general' => 'Při zpracování požadavku došlo k chybě.',
+        'general_403' => 'Nemáte oprávnění k provedení této akce.',
+        'general_404' => 'Požadovaná stránka nebyla nalezena.',
+        'general_500' => 'Při zpracování požadavku došlo k interní chybě.',
     ],
 
     'autocomplete' => [

@@ -111,7 +111,7 @@ user must have to see the menu item::
         return [
             // ...
 
-            MenuItem::linkToCrud('Blog Posts', null, BlogPost::class)
+            MenuItem::linkTo(BlogPostCrudController::class, 'Blog Posts')
                 ->setPermission('ROLE_EDITOR'),
         ];
     }
@@ -133,7 +133,7 @@ menu item definition to not have to deal with array merges::
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
         if ($this->isGranted('ROLE_EDITOR') && '...') {
-            yield MenuItem::linkToCrud('Blog Posts', null, BlogPost::class);
+            yield MenuItem::linkTo(BlogPostCrudController::class, 'Blog Posts');
         }
 
         // ...

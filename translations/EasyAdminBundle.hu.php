@@ -73,6 +73,11 @@ return [
         'content' => 'Ez a művelet visszavonhatatlan.',
     ],
 
+    'action_confirmation_modal' => [
+        'title' => 'Biztosan szeretné %action_name%?',
+        'action' => 'Megerősítés',
+    ],
+
     'filter' => [
         'title' => 'Szűrők',
         'button.clear' => 'Töröl',
@@ -93,10 +98,10 @@ return [
         'label.not_exactly' => 'nem pontosan',
         'label.is_same' => 'megegyezik',
         'label.is_not_same' => 'nem egyezik meg',
-        'label.is_after' => 'korábbi',
-        'label.is_after_or_same' => 'korábbi vagy egyezik',
-        'label.is_before' => 'későbbi',
-        'label.is_before_or_same' => 'későbbi vagy egyezik',
+        'label.is_after' => 'későbbi',
+        'label.is_after_or_same' => 'későbbi vagy egyezik',
+        'label.is_before' => 'korábbi',
+        'label.is_before_or_same' => 'korábbi vagy egyezik',
     ],
 
     'form' => [
@@ -136,6 +141,10 @@ return [
         'entity_remove' => 'Ez az elem nem törölhető más kapcsolódó adatok miatt.',
         'forbidden_action' => 'A kért művelet nem hajtható végre ezen az elemen.',
         'insufficient_entity_permission' => 'Nincs megfelelő jogosultsága az elemhez.',
+        'general' => 'Hiba történt a kérés feldolgozása közben.',
+        'general_403' => 'Nincs jogosultsága a művelet végrehajtásához.',
+        'general_404' => 'A kért oldal nem található.',
+        'general_500' => 'Belső hiba történt a kérés feldolgozása közben.',
     ],
 
     'autocomplete' => [

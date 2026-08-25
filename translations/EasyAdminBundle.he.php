@@ -73,6 +73,11 @@ return [
         'content' => 'לא ניתן לבטל פעולה זו לאחר ביצועה.',
     ],
 
+    'action_confirmation_modal' => [
+        'title' => 'האם אתה בטוח שברצונך %action_name%?',
+        'action' => 'אישור',
+    ],
+
     'filter' => [
         'title' => 'סינונים',
         'button.clear' => 'נקה',
@@ -136,6 +141,10 @@ return [
         'entity_remove' => 'פריט זה לא יכול להימחק, כיוון שפריטים אחרים תלויים בו.',
         'forbidden_action' => 'הפעולה המתבקשת לא יכולה להתבצע עבור פריט זה.',
         'insufficient_entity_permission' => 'אין לך הרשאה לגשת לפריט זה.',
+        'general' => 'An error occurred while processing your request.',
+        'general_403' => 'You don\'t have permission to perform this action.',
+        'general_404' => 'The requested page could not be found.',
+        'general_500' => 'An internal error occurred while processing your request.',
     ],
 
     'autocomplete' => [

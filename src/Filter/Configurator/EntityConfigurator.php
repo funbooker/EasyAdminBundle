@@ -70,9 +70,9 @@ final class EntityConfigurator implements FilterConfiguratorInterface
             $associationMapping = $entityDto->getClassMetadata()->associationMappings[$propertyName];
             $targetEntityFqcn = $associationMapping['targetEntity'];
 
-            $targetCrudControllerFqcn = $filterDto->getCustomOption(EntityFilter::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER)
-                ?? $context->getCrudControllers()->findCrudFqcnByEntityFqcn($targetEntityFqcn);
 
+            $targetCrudControllerFqcn = $filterDto->getCustomOption(EntityFilter::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER)
+                ?? $context->getAdminControllers()->findCrudControllerByEntity($targetEntityFqcn);
             if (null === $targetCrudControllerFqcn) {
                 throw new \LogicException('The target CRUD controller for the entity '.$targetEntityFqcn.' is not defined.');
             }

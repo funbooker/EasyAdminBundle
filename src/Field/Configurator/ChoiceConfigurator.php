@@ -78,6 +78,8 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
         if ($areChoicesTranslatable && !$choicesSupportTranslatableInterface) {
             $field->setFormTypeOptionIfNotSet('choices', array_keys($choices));
             $field->setFormTypeOptionIfNotSet('choice_label', static fn ($value) => $choices[$value]);
+        } elseif ($choicesSupportTranslatableInterface && $allChoicesAreEnums) {
+            $field->setFormTypeOptionIfNotSet('choices', array_values($choices));
         } else {
             $field->setFormTypeOptionIfNotSet('choices', $choices);
         }
@@ -94,12 +96,18 @@ final class ChoiceConfigurator implements FieldConfiguratorInterface
 
         if (ChoiceField::WIDGET_AUTOCOMPLETE === $field->getCustomOption(ChoiceField::OPTION_WIDGET)) {
             $field->setFormTypeOption('attr.data-ea-widget', 'ea-autocomplete');
-            if ('' === $field->getDefaultColumns()) {
-                $field->setDefaultColumns($isMultipleChoice ? 'col-md-8 col-xxl-6' : 'col-md-6 col-xxl-5');
-            }
+        }
+
+        if ('' === $field->getDefaultColumns()) {
+            $field->setDefaultColumns($isMultipleChoice ? 'col-md-8 col-xxl-6' : 'col-md-6 col-xxl-5');
         }
 
         $field->setFormTypeOptionIfNotSet('placeholder', '');
+
+        $preferredChoices = $field->getCustomOption(ChoiceField::OPTION_PREFERRED_CHOICES);
+        if (null !== $preferredChoices) {
+            $field->setFormTypeOptionIfNotSet('preferred_choices', $preferredChoices);
+        }
 
         // the value of this form option must be a string to properly propagate it as an HTML attribute value
         $field->setFormTypeOption('attr.data-ea-autocomplete-render-items-as-html', true === $field->getCustomOption(ChoiceField::OPTION_ESCAPE_HTML_CONTENTS) ? 'false' : 'true');

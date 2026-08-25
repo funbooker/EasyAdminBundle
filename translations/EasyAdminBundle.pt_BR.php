@@ -73,6 +73,11 @@ return [
         'content' => 'Não há como desfazer essa operação.',
     ],
 
+    'action_confirmation_modal' => [
+        'title' => 'Tem certeza que deseja %action_name%?',
+        'action' => 'Confirmar',
+    ],
+
     'filter' => [
         'title' => 'Filtros',
         'button.clear' => 'Limpar',
@@ -136,6 +141,10 @@ return [
         'entity_remove' => 'Esse item não pode ser excluído porque outros itens dependem dele.',
         'forbidden_action' => 'A ação requisitada não pode ser executada nesse item.',
         'insufficient_entity_permission' => 'Você não possui permissão para acessar este item.',
+        'general' => 'Ocorreu um erro ao processar sua solicitação.',
+        'general_403' => 'Você não tem permissão para realizar esta ação.',
+        'general_404' => 'A página solicitada não foi encontrada.',
+        'general_500' => 'Ocorreu um erro interno ao processar sua solicitação.',
     ],
 
     'autocomplete' => [

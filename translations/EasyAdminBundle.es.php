@@ -29,7 +29,7 @@ return [
         'false' => 'No',
         'empty' => 'Vacío',
         'null' => 'Nulo',
-        'object' => 'Objecto PHP',
+        'object' => 'Objeto PHP',
         'inaccessible' => 'Inaccesible',
         'inaccessible.explanation' => 'Este campo no tiene un método getter o la propiedad asociada no es pública',
         'form.empty_value' => 'Ninguno',
@@ -71,6 +71,11 @@ return [
     'delete_modal' => [
         'title' => '¿Realmente quieres borrar este elemento?',
         'content' => 'Esta acción no se puede deshacer.',
+    ],
+
+    'action_confirmation_modal' => [
+        'title' => '¿Estás seguro de que quieres %action_name%?',
+        'action' => 'Confirmar',
     ],
 
     'filter' => [
@@ -136,6 +141,10 @@ return [
         'entity_remove' => 'Este elemento no se puede eliminar porque otros elementos dependen de él.',
         'forbidden_action' => 'No se puede realizar la acción solicitada en este elemento.',
         'insufficient_entity_permission' => 'No tienes permiso para acceder a este elemento.',
+        'general' => 'Se ha producido un error al procesar tu solicitud.',
+        'general_403' => 'No tienes permiso para realizar esta acción.',
+        'general_404' => 'No se ha encontrado la página solicitada.',
+        'general_500' => 'Se ha producido un error interno al procesar tu solicitud.',
     ],
 
     'autocomplete' => [

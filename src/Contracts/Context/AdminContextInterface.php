@@ -2,6 +2,7 @@
 
 namespace EasyCorp\Bundle\EasyAdminBundle\Contracts\Context;
 
+use EasyCorp\Bundle\EasyAdminBundle\Contracts\Registry\AdminControllerRegistryInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\AssetsDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\CrudDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -28,6 +29,13 @@ interface AdminContextInterface
 
     public function getI18n(): I18nDto;
 
+    // this method will be introduced in 5.0.0, but the class that implements
+    // this interface already implements it, so you can use it to smooth upgrade
+    // public function getAdminControllers(): AdminControllerRegistryInterface;
+
+    /**
+     * @deprecated since 4.28.1, use getAdminControllers() instead
+     */
     public function getCrudControllers(): CrudControllerRegistry;
 
     /**
