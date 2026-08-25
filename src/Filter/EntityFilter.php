@@ -55,7 +55,7 @@ final class EntityFilter implements FilterInterface
         return $this;
     }
 
-    public function setCustomOption(string $optionName, $optionValue): self
+    public function setCustomOption(string $optionName, mixed $optionValue): self
     {
         $this->dto->setCustomOption($optionName, $optionValue);
 

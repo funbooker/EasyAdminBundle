@@ -150,5 +150,4 @@ final class FilterDto
     {
         \call_user_func($this->applyCallable, $queryBuilder, $filterDataDto, $fieldDto, $entityDto);
     }
-
 }

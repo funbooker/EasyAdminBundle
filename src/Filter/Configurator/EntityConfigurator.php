@@ -70,7 +70,6 @@ final class EntityConfigurator implements FilterConfiguratorInterface
             $associationMapping = $entityDto->getClassMetadata()->associationMappings[$propertyName];
             $targetEntityFqcn = $associationMapping['targetEntity'];
 
-
             $targetCrudControllerFqcn = $filterDto->getCustomOption(EntityFilter::OPTION_EMBEDDED_CRUD_FORM_CONTROLLER)
                 ?? $context->getAdminControllers()->findCrudControllerByEntity($targetEntityFqcn);
             if (null === $targetCrudControllerFqcn) {
