@@ -29,7 +29,7 @@ class NestedConfiguratorTest extends KernelTestCase
         $this->nestedConfigurator = $container->get(NestedConfigurator::class);
     }
 
-    public function testConfigure()
+    public function testConfigure(): void
     {
         $class = User::class;
         $attr = ['class' => 'foo'];
@@ -41,7 +41,7 @@ class NestedConfiguratorTest extends KernelTestCase
 
         $objectManager = $this->doctrine->getManagerForClass($class);
         $entityDto = new EntityDto($class, $objectManager->getClassMetadata($class));
-        
+
         $adminContext = $this->createMock(AdminContextInterface::class);
 
         $wrappedFilter = $nestedFilter->getWrappedFilter();
