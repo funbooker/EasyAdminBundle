@@ -17,7 +17,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\NestedFilter;
  */
 final class NestedConfigurator implements FilterConfiguratorInterface
 {
-
     /**
      * @param iterable<FilterConfiguratorInterface> $filterConfigurators
      */

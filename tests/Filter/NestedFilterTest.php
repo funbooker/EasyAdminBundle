@@ -34,7 +34,7 @@ class NestedFilterTest extends KernelTestCase
         $this->nestedConfigurator = $container->get(NestedConfigurator::class);
     }
 
-    public function testWrap()
+    public function testWrap(): void
     {
         $wrappedFilter = TextFilter::new('blogPosts.categories');
         $nestedFilter = NestedFilter::wrap($wrappedFilter);
@@ -47,7 +47,7 @@ class NestedFilterTest extends KernelTestCase
     /**
      * @dataProvider getTestApplyDataProvider
      */
-    public function testApply(string $class, FilterInterface $wrapperFilter, array $values, string $result, string $exceptionMessage = '')
+    public function testApply(string $class, FilterInterface $wrapperFilter, array $values, string $result, string $exceptionMessage = ''): void
     {
         $alias = 'o';
         $objectManager = $this->doctrine->getManagerForClass($class);
