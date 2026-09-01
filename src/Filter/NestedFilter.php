@@ -24,7 +24,7 @@ final class NestedFilter implements FilterInterface
     /** @var FilterInterface */
     private $wrappedFilter;
 
-    public static function new(string $propertyName, string $label = null): self
+    public static function new(string $propertyName, ?string $label = null): self
     {
         throw new \RuntimeException('Instead of this method, use the "wrap()" method.');
     }
@@ -34,7 +34,7 @@ final class NestedFilter implements FilterInterface
         $filterDto = $filter->getAsDto();
         $property = $filterDto->getProperty();
 
-        if (false === strpos($property, self::PATH_SEPARATOR_EXPECTED)) {
+        if (!str_contains($property, self::PATH_SEPARATOR_EXPECTED)) {
             return $filter;
         }
 
@@ -44,7 +44,7 @@ final class NestedFilter implements FilterInterface
             ->setFormType($filterDto->getFormType())
             ->setFormTypeOptions($filterDto->getFormTypeOptions())
             ->setWrappedFilter($filter)
-            ;
+        ;
     }
 
     public function apply(QueryBuilder $queryBuilder, FilterDataDto $filterDataDto, ?FieldDto $fieldDto, EntityDto $entityDto): void
@@ -69,8 +69,6 @@ final class NestedFilter implements FilterInterface
             // Apply required left joins and get the alias we have to work with
             $alias = $this->applyLeftJoins($queryBuilder, $filterDataDto->getEntityAlias(), $propertyPath);
         }
-
-
 
         // Recreate FilterDataDto adapted for the wrapped filter
         $wrappedFilterDataDto = FilterDataDto::new($filterDataDto->getIndex(), $wrappedFilterDto, $alias, [
@@ -98,7 +96,7 @@ final class NestedFilter implements FilterInterface
 
         $prefix = '';
         foreach ($segments as $i => $prop) {
-            $prop = $prefix . $prop;
+            $prop = $prefix.$prop;
             if (!$metadata->hasField($prop) && !$metadata->hasAssociation($prop)) {
                 self::throwInvalidPropertyPathException($propertyPath, $class);
             }
@@ -108,7 +106,7 @@ final class NestedFilter implements FilterInterface
                 break;
             }
             if ($metadata->hasField($prop)) {
-                $prefix .= $prop . '.';
+                $prefix .= $prop.'.';
                 continue;
             }
 
