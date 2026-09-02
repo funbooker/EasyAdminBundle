@@ -58,4 +58,21 @@ class NestedConfiguratorTest extends KernelTestCase
         self::assertEquals($wrappedFilterDto->getFormType(), $nestedFilterDto->getFormType());
         self::assertEquals($wrappedFilterDto->getFormTypeOptions(), $nestedFilterDto->getFormTypeOptions());
     }
+
+    public function testConfigureKeepsTheLabelOfTheNestedFilter(): void
+    {
+        $class = User::class;
+
+        $nestedFilter = NestedFilter::wrap(TextFilter::new('blogPosts.categories.name'));
+        $nestedFilter->setLabel('Category name');
+
+        $objectManager = $this->doctrine->getManagerForClass($class);
+        $entityDto = new EntityDto($class, $objectManager->getClassMetadata($class));
+
+        $nestedFilterDto = $nestedFilter->getAsDto();
+        $this->nestedConfigurator->configure($nestedFilterDto, null, $entityDto, $this->createMock(AdminContextInterface::class));
+
+        self::assertEquals('Category name', $nestedFilterDto->getLabel());
+        self::assertEquals('Category name', $nestedFilterDto->getFormTypeOption('label'));
+    }
 }

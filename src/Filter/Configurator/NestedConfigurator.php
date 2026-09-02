@@ -46,8 +46,16 @@ final class NestedConfigurator implements FilterConfiguratorInterface
 
         $this->configureFilter($wrappedFilterDto, $wrappedEntityDto, $context);
 
+        $label = $filterDto->getLabel();
+
         $filterDto->setFormType($wrappedFilterDto->getFormType());
         $filterDto->setFormTypeOptions($wrappedFilterDto->getFormTypeOptions());
+
+        // the form type options of the wrapped filter carry its own label (FilterDto::setLabel()
+        // mirrors the label into them), which would override the label of the nested filter
+        if (null !== $label) {
+            $filterDto->setLabel($label);
+        }
 
         $this->removeWrappedFilterOption($filterDto);
     }
