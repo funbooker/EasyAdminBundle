@@ -35,6 +35,8 @@ explicitly::
     use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
     use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
     use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
+    use EasyCorp\Bundle\EasyAdminBundle\Filter\NestedFilter;
+    use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
     class ProductCrudController extends AbstractCrudController
     {
@@ -48,6 +50,11 @@ explicitly::
                 // most of the time there is no need to define the
                 // filter type because EasyAdmin can guess it automatically
                 ->add(BooleanFilter::new('published'))
+
+                // Use filter on nested property
+                ->add(NestedFilter::wrap(
+                    TextFilter::new('options.name')
+                ))
             ;
         }
     }
@@ -252,6 +259,18 @@ Options:
 * ``preferredChoices(array $localeCodes)`` (``null``): displays these locales at the top of the list
 * ``canSelectMultiple()`` (``false``): allows selecting multiple locales
 * ``renderExpanded()`` (``false``): renders as checkboxes instead of dropdown
+
+NestedFilter
+~~~~~~~~~~~~
+
+A wrapper that allows using any other filter on nested properties. It applies the
+needed left joins until the last property of the given path and lets the wrapped
+filter apply its conditions to the query::
+
+    use EasyCorp\Bundle\EasyAdminBundle\Filter\NestedFilter;
+    use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
+
+    $filters->add(NestedFilter::wrap(TextFilter::new('options.name')));
 
 NullFilter
 ~~~~~~~~~~

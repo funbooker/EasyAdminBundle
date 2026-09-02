@@ -74,4 +74,9 @@ final class FilterDataDto
     {
         return sprintf('%s_%d', str_replace('.', '_', $this->getProperty()), $this->index + 1);
     }
+
+    public function getIndex(): int
+    {
+        return $this->index;
+    }
 }
